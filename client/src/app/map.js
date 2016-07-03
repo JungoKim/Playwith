@@ -4,30 +4,31 @@ var RouteHandler = Router.RouteHandler;
 
 var { CircularProgress } = require('material-ui');
 
-var Home = React.createClass({
+var Map = React.createClass({
 
   render: function() {
     var tagLigeMarginTop = (window.innerHeight - 48) / 2;
 
     var styles = {
       root: {
-        textAlign: 'center',
-        marginTop: tagLigeMarginTop,
+        marginTop: 48,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: "100%",
+        maxWidth : 650,
       },
     };
 
     return (
       <div style={styles.root}>
-        <CircularProgress
-          size={0.5}
-          color='#000' />
+        Map
       </div>
     );
   }
 });
 
-Home.contextTypes = {
+Map.contextTypes = {
   router: React.PropTypes.func
 };
 
-module.exports = Home;
+module.exports = Map;

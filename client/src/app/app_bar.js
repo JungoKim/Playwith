@@ -83,20 +83,28 @@ var AppBar = React.createClass({
   handleAppBarHomeButtonTouchTap : function() {
     console.log(this.state.appBarButtonSelect);
     this.setState({appBarButtonSelect : 'home'});
+    this.context.router.transitionTo('home');
   },
 
   handleAppBarSearchButtonTouchTap : function() {
     this.setState({appBarButtonSelect : 'search'});
+    this.context.router.transitionTo('search');
   },
 
   handleAppBarMapButtonTouchTap : function() {
     this.setState({appBarButtonSelect : 'map'});
+    this.context.router.transitionTo('map');
   },
 
   handleAppBarUserButtonTouchTap : function() {
     this.setState({appBarButtonSelect : 'user'});
+    this.context.router.transitionTo('user');
   },
 
 });
+
+AppBar.contextTypes = {
+  router: React.PropTypes.func
+};
 
 module.exports = AppBar;
