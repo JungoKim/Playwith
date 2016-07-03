@@ -1,0 +1,45 @@
+{
+  "name": "playwith",
+  "version": "1.0.0",
+  "description": "Playwith project built with material-ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JungoKim/Playwith.git"
+  },
+  "scripts": {
+    "start": "gulp"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
+    ]
+  },
+  "devDependencies": {
+    "browser-sync": "^1.8.1",
+    "browserify": "^7.0.3",
+    "gulp": "^3.8.10",
+    "gulp-notify": "^2.1.0",
+    "gulp-util": "^3.0.1",
+    "gulp-gzip": "1.2.0",
+    "pretty-hrtime": "^0.2.2",
+    "reactify": "^0.17.1",
+    "require-dir": "^0.1.0",
+    "underscore": "^1.7.0",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.2.1"
+  },
+  "dependencies": {
+    "material-ui": "0.13.4",
+    "react": "0.14.6",
+    "react-copy-to-clipboard": "^4.0.2",
+    "react-dom": "0.14.6",
+    "react-router": "0.13.5",
+    "react-tap-event-plugin": "0.2.1",
+    "react-tooltip": "1.1.4"
+  }
+}
