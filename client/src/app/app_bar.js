@@ -2,28 +2,26 @@ var React = require('react');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 
+var mui = require('material-ui');
+var {Colors, Spacing, Typography} = mui.Styles;
 var { IconButton } = require('material-ui');
 
-var HomeBlack = require('./icon/home_black.js');
-var HomeGray = require('./icon/home_gray.js');
-var SearchBlack = require('./icon/search_black.js');
-var SearchGray = require('./icon/search_gray.js');
-var MapBlack = require('./icon/map_black.js');
-var MapGray = require('./icon/map_gray.js');
-var UserBlack = require('./icon/user_black.js');
-var UserGray = require('./icon/user_gray.js');
+var HomeButton = require('./svg/home_button.js');
+var SearchButton = require('./svg/search_button.js');
+var MapButton = require('./svg/map_button.js');
+var UserButton = require('./svg/user_button.js');
 
 var AppBar = React.createClass({
   getInitialState: function() {
     return {
-      appBarButtonSelect : 'home',
+      appBarButtonSelect : window.location.href.split('/#/')[1],
     };
   },
 
   render: function() {
     var styles = {
       appBar: {
-        backgroundColor: '#fafafa',
+        backgroundColor: Colors.cyan400,
         position: 'fixed',
         height: 48,
         top: 0,
@@ -41,10 +39,10 @@ var AppBar = React.createClass({
       }
     };
 
-    var HomeButton = this.state.appBarButtonSelect === "home" ? <HomeBlack /> : <HomeGray />;
-    var SearchButton = this.state.appBarButtonSelect === "search" ? <SearchBlack /> : <SearchGray />;
-    var MapButton = this.state.appBarButtonSelect === "map" ? <MapBlack /> : <MapGray />;
-    var UserButton = this.state.appBarButtonSelect === "user" ? <UserBlack /> : <UserGray />;
+    var Home = this.state.appBarButtonSelect === "home" ? <HomeButton color="#ffffff" /> : <HomeButton color="#ffffff" opacity="0.4" />;
+    var Search = this.state.appBarButtonSelect === "search" ? <SearchButton color="#ffffff" /> : <SearchButton color="#ffffff" opacity="0.4" />;
+    var Map = this.state.appBarButtonSelect === "map" ? <MapButton color="#ffffff" /> : <MapButton color="#ffffff" opacity="0.4" />;
+    var User = this.state.appBarButtonSelect === "user" ? <UserButton color="#ffffff" /> : <UserButton color="#ffffff" opacity="0.4" />;
 
     return (
       <div style={styles.appBar}>
@@ -52,28 +50,28 @@ var AppBar = React.createClass({
           <IconButton
             style={styles.appBarIconButton}
             onTouchTap={this.handleAppBarHomeButtonTouchTap} >
-            {HomeButton}
+            {Home}
           </IconButton>
         </div>
         <div style={styles.appBarIconButtonContainer}>
           <IconButton
             style={styles.appBarIconButton}
             onTouchTap={this.handleAppBarSearchButtonTouchTap} >
-            {SearchButton}
+            {Search}
           </IconButton>
         </div>
         <div style={styles.appBarIconButtonContainer}>
           <IconButton
             style={styles.appBarIconButton}
             onTouchTap={this.handleAppBarMapButtonTouchTap} >
-            {MapButton}
+            {Map}
           </IconButton>
         </div>
         <div style={styles.appBarIconButtonContainer}>
           <IconButton
            style={styles.appBarIconButton}
             onTouchTap={this.handleAppBarUserButtonTouchTap} >
-            {UserButton}
+            {User}
           </IconButton>
         </div>
       </div>

@@ -2,25 +2,37 @@ var React = require('react');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 
-var { CircularProgress } = require('material-ui');
+var mui = require('material-ui');
+var {Colors, Spacing, Typography} = mui.Styles;
+
+var {
+  Avatar,
+  List,
+  ListItem,
+  ListDivider,
+  CircularProgress
+} = require('material-ui');
+
+var SelectTarget = require('./select_target.js');
+var PlayList = require('./play_list.js');
 
 var Home = React.createClass({
 
   render: function() {
-    var tagLigeMarginTop = (window.innerHeight - 48) / 2;
-
     var styles = {
       root: {
-        textAlign: 'center',
-        marginTop: tagLigeMarginTop,
-      },
+        marginTop: 48,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: "100%",
+        maxWidth : 650,
+      }
     };
 
     return (
       <div style={styles.root}>
-        <CircularProgress
-          size={0.5}
-          color='#000' />
+        <SelectTarget />
+        <PlayList />
       </div>
     );
   }
