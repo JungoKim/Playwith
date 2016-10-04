@@ -9,6 +9,8 @@ var Home = require('./home.js');
 var Search = require('./search.js');
 var Map = require('./map.js');
 var User = require('./user.js');
+var CreatePlay = require('./create_play.js');
+var PlayInfo = require('./play_info.js');
 
 var AppRoutes = (
   <Route name="root" path="/" handler={Master}>
@@ -16,6 +18,8 @@ var AppRoutes = (
     <Route name="search" handler={Search} />
     <Route name="map" handler={Map} />
     <Route name="user" handler={User} />
+    <Route name="create_play" handler={CreatePlay} />
+    <Route name="play_info" handler={PlayInfo} />
     <DefaultRoute handler={Home}/>
   </Route>
 );

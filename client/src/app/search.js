@@ -19,11 +19,13 @@ var { Colors, Spacing, Typography } = mui.Styles;
 
 var PlayList = require('./play_list.js');
 
+searchList = [];
+
 var Search = React.createClass({
   getInitialState: function() {
     return {
       result : '',
-      data:[],
+      searchListData:[],
     };
   },
 
@@ -54,7 +56,8 @@ var Search = React.createClass({
             hintText="# 검색"
             underlineFocusStyle={{borderColor: Colors.grey500}}
             multiLine={false} />
-        <PlayList />
+        <PlayList 
+          data={this.state.searchListData} />
         <Snackbar
           ref="snackbar"
           autoHideDuration={1500}
