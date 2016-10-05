@@ -67,12 +67,13 @@ var PlayInfo = React.createClass({
       joinButton: {
         margin:'6px 0px 0px 0px',
       },
-      gameSelectField: {
-        width : 'calc(100% - 20px)',
-        fontSize : 15,
-      },
       card: {
         margin: 5
+      },
+      cardTitleText: {
+        fontSize: 16,
+        height: 40,
+        paddingTop: 14
       },
       cardText: {
         paddingTop: 8,
@@ -86,8 +87,9 @@ var PlayInfo = React.createClass({
         marginBottom: 16
       },
       leftAvataIcon: {
-        width: 48,
-        height: 48,
+        width: 42,
+        height: 42,
+        marginRight: 10
       },
       location: {
         width: 16,
@@ -109,13 +111,12 @@ var PlayInfo = React.createClass({
         overflow: "auto"
       },
       joinStatus: {
-        width: 100,
+        width: 120,
         height: 36,
         paddingTop: 0,
-        color: Colors.white,
         textAlign: 'center',
         borderRadius: 36,
-        background: Colors.grey600,
+        background: Colors.grey200,
         lineHeight: 2.5,
         float: "left",
         fontSize: 15,
@@ -144,7 +145,7 @@ var PlayInfo = React.createClass({
         <Card style={styles.card}>
           <CardHeader
             title={
-              <div style={{fontSize: 22, height: 40, paddingTop: 16}}>
+              <div style={styles.cardTitleText}>
                {selectedPlay.playClass.S}
               </div>
             }

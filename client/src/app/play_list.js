@@ -61,7 +61,7 @@ var PlayList = React.createClass({
         fontSize: 13,
         textAlign: 'center',
         borderRadius: 13,
-        background: Colors.grey600,
+        background: Colors.grey500,
       }
     };
 

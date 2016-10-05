@@ -1,8 +1,13 @@
 var React = require('react');
 var Router = require('react-router');
 var mui = require('material-ui');
-var { SelectField, Styles } = mui;
-var { Colors, Spacing, Typography } = mui.Styles;
+
+var { SelectField,
+  Styles } = mui;
+
+var { Colors,
+  Spacing,
+  Typography } = mui.Styles;
 
 var SelectTarget = React.createClass({
   getInitialState: function() {
@@ -35,6 +40,8 @@ var SelectTarget = React.createClass({
       { payload: '1', text: '전체' },
       { payload: '2', text: '테니스' },
       { payload: '3', text: '농구' },
+      { payload: '4', text: '농구' },
+      { payload: '4', text: '농구' },
     ];
 
     this.filterItems = [
@@ -48,7 +55,7 @@ var SelectTarget = React.createClass({
         ref="gameSelectField"
         style={styles.gameSelectField}
         value={this.state.gameValue}
-        floatingLabelText='종목'
+        floatingLabelText={window.textSet.gameSelect}
         onChange={this.handleSelectValuechange.bind(null, 'gameValue')}
         menuItems={this.gameItems} />
       <SelectField
