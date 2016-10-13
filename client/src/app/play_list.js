@@ -91,12 +91,12 @@ var PlayList = React.createClass({
               primaryText={
                  <span>
                    {play.playClass.S} <br/>
-                   <span style={{color: Colors.lightBlack, fontSize: 14}}>{play.content.S}</span>
+                   <span style={{color: Colors.lightBlack, fontSize: 14}}>{play.content.S}</span> <br/>
                  </span>
               }
               secondaryText={
                 <span>
-                  <span style={{color: Colors.darkBlack}}><LocationIcon style={styles.location} /> {play.location.S}, {play.gps.S}</span><br/>
+                  <span style={{color: Colors.darkBlack}}><LocationIcon style={styles.location} /> {play.location.S}, {play.gps.S}</span> <br/>
                   <span style={{color: Colors.darkBlack}}><TimeIcon style={styles.time} /> {play.playDate.S} 남음</span>
                 </span>
               }
