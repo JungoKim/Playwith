@@ -30,7 +30,9 @@ var CreatePlay = React.createClass({
   getInitialState: function() {
     return {
       gameValue: '1',
-      maxMemberValue: '1'
+      maxMemberValue: '1',
+      timeValue: null,
+      dateValue: null
     };
   },
 
@@ -210,10 +212,13 @@ var CreatePlay = React.createClass({
           <CardText style={styles.lastCardText}>
             <DatePicker
               hintText="날짜"
+              ref="datePicker"
+              formatDate={this.formatDate}
               textFieldStyle={styles.datePicker} />
             <TimePicker
               format="ampm"
               hintText="시간"
+              ref="timePicker"
               textFieldStyle={styles.timePicker} />
           </CardText>
         </Card>
@@ -237,6 +242,10 @@ var CreatePlay = React.createClass({
   getMaxMember: function() {
     return this.maxMemberItems[parseInt(this.state.maxMember)-1].text;
   },
+
+  formatDate: function(date) {
+    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+  }
 });
 
 

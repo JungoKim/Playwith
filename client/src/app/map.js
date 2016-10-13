@@ -5,6 +5,21 @@ var RouteHandler = Router.RouteHandler;
 var { CircularProgress } = require('material-ui');
 
 var Map = React.createClass({
+  getInitialState: function() {
+    return {
+    };
+  },
+
+  componentWillMount: function () {
+    console.log("componentWillMount");
+    this.curLat = 37.3595704;
+    this.curLng = 127.105399;
+  },
+
+  componentDidMount: function () {
+    console.log("componentDidMount");
+    this.getLocation();
+  },
 
   render: function() {
     var tagLigeMarginTop = (window.innerHeight - 48) / 2;
@@ -16,14 +31,40 @@ var Map = React.createClass({
         marginRight: 'auto',
         width: "100%",
         maxWidth : 650,
+        height: window.innerHeight-48
       },
     };
 
     return (
-      <div style={styles.root}>
+      <div id='map' style={styles.root}>
         Map
       </div>
     );
+  },
+
+  createMap: function() {
+    var mapOptions = {
+      center: new naver.maps.LatLng(this.curLat, this.curLng),
+       zoom: 10
+    };
+    var map = new naver.maps.Map('map', mapOptions);
+  },
+
+  getLocation: function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.showPosition);
+    } else {
+        this.createMap();
+        console.log("Geolocation is not supported by this browser.");
+    }
+  },
+
+  showPosition: function(position) {
+    this.curLat = position.coords.latitude;
+    this.curLng = position.coords.longitude;
+    this.createMap();
+    console.log(this.curLat);
+    console.log(this.curLng);
   }
 });
 

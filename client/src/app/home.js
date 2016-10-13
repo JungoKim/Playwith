@@ -21,7 +21,7 @@ playList = [
   {
     index: { S : "userId0_1471575141450"},
     userId: { S : "userId0"},
-    userProfile: { S : "http://graph.facebook.com/834827176637705/picture?type=small"},
+    userProfile: { S : "https://graph.facebook.com/834827176637705/picture?type=small"},
     date: { S : "1471575141450"},
     location: { S : "잠원동"},
     gps: { S : "1.3 km"},
@@ -37,7 +37,7 @@ playList = [
   {
     index: { S : "userId1_1471575141450"},
     userId: { S : "userId1"},
-    userProfile: { S : "http://mud-kage.kakao.co.kr/14/dn/btqcNBAWzFM/DKAymcsOYtzBQNKoeGYZ91/o.jpg"},
+    userProfile: { S : "https://graph.facebook.com/834827176637705/picture?type=small"},
     date: { S : "1471575141450"},
     location: { S : "잠원동"},
     gps: { S : "1.3 km"},
@@ -52,7 +52,7 @@ playList = [
   {
     index: { S : "userId2_1471575141450"},
     userId: { S : "userId2"},
-    userProfile: { S : "http://graph.facebook.com/834827176637705/picture?type=small"},
+    userProfile: { S : "https://graph.facebook.com/834827176637705/picture?type=small"},
     date: { S : "1471575141450"},
     location: { S : "잠원동"},
     gps: { S : "1.3 km"},
@@ -67,7 +67,7 @@ playList = [
   {
     index: { S : "userId3_1471575141450"},
     userId: { S : "userId3"},
-    userProfile: { S : "http://graph.facebook.com/834827176637705/picture?type=small"},
+    userProfile: { S : "https://graph.facebook.com/834827176637705/picture?type=small"},
     date: { S : "1471575141450"},
     location: { S : "잠원동"},
     gps: { S : "1.3 km"},
@@ -82,7 +82,7 @@ playList = [
   {
     index: { S : "userId4_1471575141450"},
     userId: { S : "userId4"},
-    userProfile: { S : "http://graph.facebook.com/834827176637705/picture?type=small"},
+    userProfile: { S : "https://graph.facebook.com/834827176637705/picture?type=small"},
     date: { S : "1471575141450"},
     location: { S : "잠원동"},
     gps: { S : "1.3 km"},
