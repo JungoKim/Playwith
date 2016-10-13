@@ -2,7 +2,17 @@ var React = require('react');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 
-var { CircularProgress } = require('material-ui');
+var {
+  Avatar,
+  List,
+  ListItem,
+  ListDivider,
+  CircularProgress
+} = require('material-ui');
+
+var MyPlay = require('./svg/my_play.js');
+var JoinPlay = require('./svg/join_play.js');
+var Logout = require('./svg/logout.js');
 
 var User = React.createClass({
 
@@ -21,7 +31,16 @@ var User = React.createClass({
 
     return (
       <div style={styles.root}>
-        User
+        <List>
+          <ListItem
+            primaryText="Jungo Kim"
+            leftAvatar={<Avatar src="http://graph.facebook.com/834827176637705/picture?type=small" />} />
+          <ListDivider />
+          <ListItem primaryText="My play" leftIcon={<MyPlay />} />
+          <ListItem primaryText="Join play " leftIcon={<JoinPlay />} />
+          <ListDivider />
+          <ListItem primaryText="Logout" leftIcon={<Logout />} />
+        </List>
       </div>
     );
   }
