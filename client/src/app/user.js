@@ -34,12 +34,12 @@ var User = React.createClass({
         <List>
           <ListItem
             primaryText="Jungo Kim"
-            leftAvatar={<Avatar src="http://graph.facebook.com/834827176637705/picture?type=small" />} />
+            leftAvatar={<Avatar src="https://graph.facebook.com/834827176637705/picture?type=small" />} />
           <ListDivider />
-          <ListItem primaryText="My play" leftIcon={<MyPlay />} />
-          <ListItem primaryText="Join play " leftIcon={<JoinPlay />} />
+          <ListItem primaryText={window.textSet.myPlay} leftIcon={<MyPlay />} />
+          <ListItem primaryText={window.textSet.joinPlay} leftIcon={<JoinPlay />} />
           <ListDivider />
-          <ListItem primaryText="Logout" leftIcon={<Logout />} />
+          <ListItem primaryText={window.textSet.logout} leftIcon={<Logout />} />
         </List>
       </div>
     );

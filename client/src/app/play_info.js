@@ -161,7 +161,7 @@ var PlayInfo = React.createClass({
             <TimeIcon style={styles.time} /> {selectedPlay.playDate.S} 남음
           </CardText>
           <div style={styles.joinMemberContainer}>
-            <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.S) - selectedPlay.joinList.length} 명 참여가능</div>
+            <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.S) - selectedPlay.joinList.length}{window.textSet.memberLeft}</div>
             <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
             <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
             <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>

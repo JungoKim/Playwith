@@ -62,7 +62,7 @@ var SelectTarget = React.createClass({
         ref="filterSelectField"
         style={styles.filterSelectField}
         value={this.state.filterValue}
-        floatingLabelText='정렬'
+        floatingLabelText={window.textSet.filterSelect}
         onChange={this.handleSelectValuechange.bind(null, 'filterValue')}
         menuItems={this.filterItems} />
       </div>

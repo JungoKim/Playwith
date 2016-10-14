@@ -177,7 +177,7 @@ var CreatePlay = React.createClass({
               style={styles.maxMemberSelectField}
               value={this.state.maxMemberValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
-              floatingLabelText='정원'
+              floatingLabelText={window.textSet.maxMember}
               onChange={this.handleSelectValuechange.bind(null, 'maxMemberValue')}
               menuItems={this.maxMemberItem} />
           </CardText>
@@ -205,19 +205,19 @@ var CreatePlay = React.createClass({
                 <IconButton style={{width: 60, height: 60, marginLeft: 15}} >
                   <MapLocation color="rgba(0,0,0,0.7)"/>
                 </IconButton>
-                <div style={{fontSize: 11, marginTop : -16, textAlign: 'center', color:"rgba(0,0,0,0.3)"}}> 지도에서 선택 </div>
+                <div style={{fontSize: 11, marginTop : -16, textAlign: 'center', color:"rgba(0,0,0,0.3)"}}> {window.textSet.mapSelect} </div>
               </div>
             </div>
           </CardText>
           <CardText style={styles.lastCardText}>
             <DatePicker
-              hintText="날짜"
+              hintText={window.textSet.date}
               ref="datePicker"
               formatDate={this.formatDate}
               textFieldStyle={styles.datePicker} />
             <TimePicker
               format="ampm"
-              hintText="시간"
+              hintText={window.textSet.time}
               ref="timePicker"
               textFieldStyle={styles.timePicker} />
           </CardText>

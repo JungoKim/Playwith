@@ -53,7 +53,7 @@ var Search = React.createClass({
             ref="searchField"
             style={styles.textFieldStyle}
             hintStyle={{fontSize : 13}}
-            hintText="# 검색"
+            hintText={window.textSet.search}
             underlineFocusStyle={{borderColor: Colors.grey500}}
             multiLine={false} />
         <PlayList 

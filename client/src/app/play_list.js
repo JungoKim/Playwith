@@ -67,13 +67,25 @@ var PlayList = React.createClass({
 
     if (this.props.data.length < 1) {
       console.log("Warning, No playList Data...");
-      list = function () {
+      this.list = function () {
         return (
           <div></div>
         );
       }();
     } else {
-      list = this.props.data.map(function (play) {
+      this.more = function () {
+        return (
+          <div>
+            <ListItem
+              primaryText={
+                <div style={{color: Colors.darkBlack, fontSize: 14, textAlign: "center"}}>{window.textSet.more}</div>
+              } />
+            <ListDivider />
+          </div>
+        );
+      }();
+
+      this.list = this.props.data.map(function (play) {
         if (play === null || play === undefined)
           return;
         return (
@@ -111,13 +123,9 @@ var PlayList = React.createClass({
       <div style={styles.root}>
         <List
           style={{paddingTop: 0}} >
-          {list}
+          {this.list}
           <ListDivider />
-          <ListItem
-            primaryText={
-              <div style={{color: Colors.darkBlack, fontSize: 14, textAlign: "center"}}>더보기</div>
-            } />
-          <ListDivider />
+          {this.more}
         </List>
       </div>
     );

@@ -37,7 +37,6 @@ var Map = React.createClass({
 
     return (
       <div id='map' style={styles.root}>
-        Map
       </div>
     );
   },
