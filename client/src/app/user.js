@@ -34,7 +34,7 @@ var User = React.createClass({
         <List>
           <ListItem
             primaryText="Jungo Kim"
-            leftAvatar={<Avatar src="https://graph.facebook.com/834827176637705/picture?type=small" />} />
+            leftAvatar={<Avatar src="http://graph.facebook.com/834827176637705/picture?type=small" />} />
           <ListDivider />
           <ListItem primaryText={window.textSet.myPlay} leftIcon={<MyPlay />} />
           <ListItem primaryText={window.textSet.joinPlay} leftIcon={<JoinPlay />} />

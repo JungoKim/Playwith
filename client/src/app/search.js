@@ -17,6 +17,7 @@ var {
   RaisedButton } = mui;
 var { Colors, Spacing, Typography } = mui.Styles;
 
+var SearchMiniButtion = require('./svg/search_mini_button.js');
 var PlayList = require('./play_list.js');
 
 searchList = [];
@@ -27,6 +28,10 @@ var Search = React.createClass({
       result : '',
       searchListData:[],
     };
+  },
+
+  componentDidMount: function () {
+    this.refs.searchField.focus();
   },
 
   render: function() {
@@ -41,21 +46,35 @@ var Search = React.createClass({
         maxWidth : 650,
       },
       textFieldStyle: {
-        width: 'calc(100% - 30px)',
+        width: 'calc(100% - 66px)',
+        float: 'left',
         marginLeft: 15,
-        marginRight: 15,
       },
+      sendButtonStyle: {
+        float: 'left',
+      }
     };
 
     return (
       <div style={styles.root}>
-        <TextField
+        <div>
+          <TextField
             ref="searchField"
             style={styles.textFieldStyle}
+            type="search"
+            onChange={this._handleInputChange}
+            onEnterKeyDown={this._handleEnterKeyDown}
             hintStyle={{fontSize : 13}}
             hintText={window.textSet.search}
             underlineFocusStyle={{borderColor: Colors.grey500}}
             multiLine={false} />
+          <IconButton
+            style={styles.sendButtonStyle}
+            tooltip={window.textSet.doSearch}
+            onTouchTap={this._handleSearchButtonTouchTap} >
+            <SearchMiniButtion />
+          </IconButton>
+        </div>
         <PlayList 
           data={this.state.searchListData} />
         <Snackbar
@@ -64,7 +83,13 @@ var Search = React.createClass({
           message={this.state.result} />
       </div>
     );
-  }
+  },
+  _handleInputChange: function(e) {
+  },
+  _handleEnterKeyDown: function(e) {
+  },
+  _handleSearchButtonTouchTap: function(e) {
+  },
 });
 
 Search.contextTypes = {

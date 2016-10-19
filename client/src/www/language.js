@@ -17,6 +17,7 @@ function getTextSetByLanguege(language) {
       text.filterSelect = "정렬";
       text.location = "장소";
       text.search = "# 검색";
+      text.doSearch = "검색하기";
       text.maxMember = "정원";
       text.date = "날짜";
       text.time = "시간";
@@ -43,6 +44,7 @@ function getTextSetByLanguege(language) {
       text.filterSelect = "Filter";
       text.location = "Location";
       text.search = "# Search";
+      text.doSearch = "Search";
       text.maxMember = "Member";
       text.date = "Date";
       text.time = "Time";
