@@ -2,7 +2,12 @@ var React = require('react');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 
-var { CircularProgress } = require('material-ui');
+var mui = require('material-ui');
+
+var {
+  CircularProgress,
+  RaisedButton } = mui;
+
 
 var Map = React.createClass({
   getInitialState: function() {
@@ -12,18 +17,14 @@ var Map = React.createClass({
 
   componentWillMount: function () {
     console.log("componentWillMount");
-    this.curLat = 37.3595704;
-    this.curLng = 127.105399;
   },
 
   componentDidMount: function () {
     console.log("componentDidMount");
-    this.getLocation();
+    this.createMap();
   },
 
   render: function() {
-    var tagLigeMarginTop = (window.innerHeight - 48) / 2;
-
     var styles = {
       root: {
         marginTop: 48,
@@ -33,38 +34,34 @@ var Map = React.createClass({
         maxWidth : 650,
         height: window.innerHeight-48
       },
+      searchButton : {
+        position : 'fixed',
+        bottom: 30,
+        left: (window.innerWidth-124)/2
+      }
     };
 
     return (
-      <div id='map' style={styles.root}>
+      <div>
+        <div id='map' style={styles.root}>
+        </div>
+        <RaisedButton
+          label={window.textSet.searchInArea}
+          style={styles.searchButton}
+          primary={true} />
       </div>
     );
   },
 
   createMap: function() {
     var mapOptions = {
-      center: new naver.maps.LatLng(this.curLat, this.curLng),
-       zoom: 10
+      center: new naver.maps.LatLng(window.curLat, window.curLng),
+       zoom: 7
     };
     var map = new naver.maps.Map('map', mapOptions);
   },
 
-  getLocation: function() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.showPosition);
-    } else {
-        this.createMap();
-        console.log("Geolocation is not supported by this browser.");
-    }
-  },
 
-  showPosition: function(position) {
-    this.curLat = position.coords.latitude;
-    this.curLng = position.coords.longitude;
-    this.createMap();
-    console.log(this.curLat);
-    console.log(this.curLng);
-  }
 });
 
 Map.contextTypes = {

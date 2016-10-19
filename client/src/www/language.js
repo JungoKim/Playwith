@@ -27,6 +27,8 @@ function getTextSetByLanguege(language) {
       text.joinPlay = "참여 Play";
       text.logout = "로그아웃";
       text.memberLeft = "명 참여가능";
+      text.searchInArea = "이 지역에서 검색";
+      text.selectComplete = "선택완료";
       break;
     case "en" :
       text.login = "Sign in";

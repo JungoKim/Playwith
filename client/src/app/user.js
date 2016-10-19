@@ -17,8 +17,6 @@ var Logout = require('./svg/logout.js');
 var User = React.createClass({
 
   render: function() {
-    var tagLigeMarginTop = (window.innerHeight - 48) / 2;
-
     var styles = {
       root: {
         marginTop: 48,

@@ -35,8 +35,6 @@ var Search = React.createClass({
   },
 
   render: function() {
-    var tagLigeMarginTop = (window.innerHeight - 48) / 2;
-
     var styles = {
       root: {
         marginTop: 48,
@@ -61,7 +59,6 @@ var Search = React.createClass({
           <TextField
             ref="searchField"
             style={styles.textFieldStyle}
-            type="search"
             onChange={this._handleInputChange}
             onEnterKeyDown={this._handleEnterKeyDown}
             hintStyle={{fontSize : 13}}

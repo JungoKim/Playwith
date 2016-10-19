@@ -32,7 +32,9 @@ var CreatePlay = React.createClass({
       gameValue: '1',
       maxMemberValue: '1',
       timeValue: null,
-      dateValue: null
+      dateValue: null,
+      mapShow: false,
+      mapSelectText : window.textSet.mapSelect
     };
   },
 
@@ -46,8 +48,6 @@ var CreatePlay = React.createClass({
   },
 
   render: function() {
-    var tagLigeMarginTop = (window.innerHeight - 48) / 2;
-
     var styles = {
       root: {
         marginTop: 48,
@@ -104,7 +104,6 @@ var CreatePlay = React.createClass({
         paddingTop: 8,
         paddingBottom: 8,
         fontSize: 15,
-        marginBottom: 16,
         overflow: 'auto'
       },
       gameSelectField: {
@@ -121,6 +120,19 @@ var CreatePlay = React.createClass({
         width : "calc(100% - 100px)",
         float: 'left',
       },
+      mapSelectText: this.state.mapSelectText == window.textSet.mapSelect ?
+      {
+        fontSize: 11,
+        marginTop : -16,
+        textAlign: 'center',
+        color:"rgba(0,0,0,0.3)"
+      }
+      : {
+        fontSize: 11,
+        marginTop : -16,
+        textAlign: 'center',
+        color: Colors.black
+      },
       datePicker: {
         width : 'calc(50% - 15px)',
         marginRight: 30,
@@ -129,6 +141,23 @@ var CreatePlay = React.createClass({
       timePicker: {
         width : 'calc(50% - 15px)',
         float: 'left'
+      },
+      map : this.state.mapShow ?
+      {
+        width: 'calc(100% - 32px)',
+        marginRight: 16,
+        marginLeft: 16,
+        marginBottom : 32,
+        height: 400
+      }
+      : {
+        display : 'none'
+      },
+      searchButton : {
+        position : 'absolute',
+        top: 8,
+        right: 8,
+        zIndex: 2
       },
     };
 
@@ -202,10 +231,16 @@ var CreatePlay = React.createClass({
                 floatingLabelText={window.textSet.location}
                 multiLine={false} />
               <div style={{float: 'left', width: 90, height: 70, marginTop: 4, marginLeft: 10}}>
-                <IconButton style={{width: 60, height: 60, marginLeft: 15}} >
+                <IconButton
+                  style={{width: 60, height: 60, marginLeft: 15}}
+                  onTouchTap={this._handleSearchInMap} >
                   <MapLocation color="rgba(0,0,0,0.7)"/>
                 </IconButton>
-                <div style={{fontSize: 11, marginTop : -16, textAlign: 'center', color:"rgba(0,0,0,0.3)"}}> {window.textSet.mapSelect} </div>
+                <div
+                  style={styles.mapSelectText}
+                  ref="mapSelectText">
+                  {this.state.mapSelectText}
+                </div>
               </div>
             </div>
           </CardText>
@@ -221,6 +256,13 @@ var CreatePlay = React.createClass({
               ref="timePicker"
               textFieldStyle={styles.timePicker} />
           </CardText>
+          <div id='searchInMap' style={styles.map}>
+            <RaisedButton
+              label={window.textSet.mapSelect}
+              style={styles.searchButton}
+              onTouchTap={this._handleSearchInMapComplete}
+              primary={true} />
+          </div>
         </Card>
       </div>
     );
@@ -245,6 +287,34 @@ var CreatePlay = React.createClass({
 
   formatDate: function(date) {
     return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+  },
+
+  _handleSearchInMap: function() {
+    if (this.state.mapShow == true)
+      return;
+
+    this.setState({mapShow: true, mapSelectText : window.textSet.mapSelect});
+
+    var previous_style = document.getElementById('searchInMap').style.display
+    var poll = window.setInterval( function() {
+      var current_style = document.getElementById('searchInMap').style.display;
+      if (previous_style != current_style) {
+        console.log(previous_style);
+        console.log(current_style);
+        var mapOptions = {
+          center: new naver.maps.LatLng(window.curLat, window.curLng),
+          zoom: 7
+        };
+        var map = new naver.maps.Map('searchInMap', mapOptions);
+        window.clearInterval(poll);
+      } else {
+          previous_style = current_style;
+      }
+    }, 100);
+  },
+
+  _handleSearchInMapComplete: function() {
+    this.setState({mapShow: false, mapSelectText : window.textSet.selectComplete});
   }
 });
 

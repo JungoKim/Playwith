@@ -21,6 +21,22 @@ var { AppBar,
 var AppBar = require('./app_bar.js');
 
 var Master = React.createClass({
+
+  getInitialState: function() {
+    return {
+      mobileView : null,
+    };
+  },
+
+  componentWillMount: function(){
+    console.log("master componentWillMount");
+    var setMobileViewState = function() {
+      this.setState({mobileView: (document.body.clientWidth <= 647)});
+    }.bind(this);
+    setMobileViewState();
+    window.onresize = setMobileViewState;
+  },
+
   render: function() {
     var styles = {
       root: {
