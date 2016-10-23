@@ -33,15 +33,28 @@ var CreatePlay = React.createClass({
       maxMemberValue: '1',
       timeValue: null,
       dateValue: null,
-      mapShow: false,
       mapSelectText : window.textSet.mapSelect
     };
   },
 
   componentWillMount: function () {
+    this.gameItems = [];
+    for (var i = 0; i < window.sportsClass.length; i++) {
+      this.gameItems[i] = { payload: (i+1)+'', text: window.sportsClass[i] };
+    }
+
+    this.maxMemberItem = [];
+    for (var i = 0; i < 100; i++) {
+      this.maxMemberItem[i] = { payload: (i+1)+'', text: (i+1)+'명' };
+    }
   },
 
   componentDidMount: function () {
+    var mapOptions = {
+      center: new naver.maps.LatLng(window.curLat, window.curLng),
+      zoom: 7
+    };
+    var map = new naver.maps.Map('searchInMap', mapOptions);
   },
 
   componentWillUpdate: function(nextProps, nextState) {
@@ -142,46 +155,31 @@ var CreatePlay = React.createClass({
         width : 'calc(50% - 15px)',
         float: 'left'
       },
-      map : this.state.mapShow ?
-      {
+      map : {
         width: 'calc(100% - 32px)',
         marginRight: 16,
         marginLeft: 16,
         marginBottom : 32,
         height: 400
-      }
-      : {
-        display : 'none'
       },
       searchButton : {
         position : 'absolute',
-        top: 8,
-        right: 8,
+        top: 'calc(50% - 82px)',
+        left: 'calc(50% - 54px)',
         zIndex: 2
       },
+      mapMarker : {
+        position : 'absolute',
+        top: 'calc(50% - 48px)',
+        left: 'calc(50% - 24px)',
+        zIndex: 2,
+      },
     };
-
-    this.gameItems = [
-      { payload: '1', text: '테니스' },
-      { payload: '2', text: '테니스' },
-      { payload: '3', text: '농구' },
-      { payload: '4', text: '농구' },
-      { payload: '5', text: '농구' },
-    ];
-
-    this.maxMemberItem = [
-      { payload: '1', text: '1명' },
-      { payload: '2', text: '2명' },
-      { payload: '3', text: '3명' },
-      { payload: '4', text: '4명' },
-      { payload: '5', text: '5명' },
-    ];
-
 
     return (
       <div style={styles.root}>
         <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true} float="left">
+          <ToolbarGroup style={{marginLeft: -12}} firstChild={true} float="left">
             <IconButton style={styles.iconButton} tooltip={window.textSet.back} onTouchTap={this.handleBackButtonTouchTap} >
               <Back />
             </IconButton>
@@ -196,6 +194,7 @@ var CreatePlay = React.createClass({
             <SelectField
               ref="gameSelectField"
               style={styles.gameSelectField}
+              maxHeight={300}
               value={this.state.gameValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
               floatingLabelText={window.textSet.gameSelect}
@@ -204,6 +203,7 @@ var CreatePlay = React.createClass({
             <SelectField
               ref="maxMemberSelectField"
               style={styles.maxMemberSelectField}
+              maxHeight={300}
               value={this.state.maxMemberValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
               floatingLabelText={window.textSet.maxMember}
@@ -256,12 +256,16 @@ var CreatePlay = React.createClass({
               ref="timePicker"
               textFieldStyle={styles.timePicker} />
           </CardText>
+          {this.mapContainer}
           <div id='searchInMap' style={styles.map}>
             <RaisedButton
               label={window.textSet.mapSelect}
               style={styles.searchButton}
               onTouchTap={this._handleSearchInMapComplete}
               primary={true} />
+            <img
+              style={styles.mapMarker}
+              src="./img/map_marker.png" />
           </div>
         </Card>
       </div>
@@ -290,31 +294,12 @@ var CreatePlay = React.createClass({
   },
 
   _handleSearchInMap: function() {
-    if (this.state.mapShow == true)
-      return;
-
-    this.setState({mapShow: true, mapSelectText : window.textSet.mapSelect});
-
-    var previous_style = document.getElementById('searchInMap').style.display
-    var poll = window.setInterval( function() {
-      var current_style = document.getElementById('searchInMap').style.display;
-      if (previous_style != current_style) {
-        console.log(previous_style);
-        console.log(current_style);
-        var mapOptions = {
-          center: new naver.maps.LatLng(window.curLat, window.curLng),
-          zoom: 7
-        };
-        var map = new naver.maps.Map('searchInMap', mapOptions);
-        window.clearInterval(poll);
-      } else {
-          previous_style = current_style;
-      }
-    }, 100);
+    this.setState({mapSelectText : window.textSet.mapSelect});
+    window.scrollTo(0, 200);
   },
 
   _handleSearchInMapComplete: function() {
-    this.setState({mapShow: false, mapSelectText : window.textSet.selectComplete});
+    this.setState({mapSelectText : window.textSet.selectComplete});
   }
 });
 

@@ -131,7 +131,7 @@ var PlayInfo = React.createClass({
     return (
       <div style={styles.root}>
         <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true} float="left">
+          <ToolbarGroup style={{marginLeft: -12}} firstChild={true} float="left">
             <IconButton style={styles.iconButton} tooltip={window.textSet.back} onTouchTap={this.handleBackButtonTouchTap} >
               <Back />
             </IconButton>

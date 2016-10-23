@@ -48,6 +48,7 @@ var PlayList = React.createClass({
         height : 80,
         top: 3,
         right: 0,
+        margin : "12px 0px 0px 0px"
       },
       rightSportsIcon: {
         width: 44,

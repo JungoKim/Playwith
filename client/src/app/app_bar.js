@@ -40,8 +40,8 @@ var AppBar = React.createClass({
     };
 
     var Home = this.state.appBarButtonSelect === "home" ? <HomeButton color="#ffffff" /> : <HomeButton color="#ffffff" opacity="0.4" />;
-    var Search = this.state.appBarButtonSelect === "search" ? <SearchButton color="#ffffff" /> : <SearchButton color="#ffffff" opacity="0.4" />;
     var Map = this.state.appBarButtonSelect === "map" ? <MapButton color="#ffffff" /> : <MapButton color="#ffffff" opacity="0.4" />;
+    var Search = this.state.appBarButtonSelect === "search" ? <SearchButton color="#ffffff" /> : <SearchButton color="#ffffff" opacity="0.4" />;
     var User = this.state.appBarButtonSelect === "user" ? <UserButton color="#ffffff" /> : <UserButton color="#ffffff" opacity="0.4" />;
 
     return (
@@ -56,15 +56,15 @@ var AppBar = React.createClass({
         <div style={styles.appBarIconButtonContainer}>
           <IconButton
             style={styles.appBarIconButton}
-            onTouchTap={this.handleAppBarSearchButtonTouchTap} >
-            {Search}
+            onTouchTap={this.handleAppBarMapButtonTouchTap} >
+            {Map}
           </IconButton>
         </div>
         <div style={styles.appBarIconButtonContainer}>
           <IconButton
             style={styles.appBarIconButton}
-            onTouchTap={this.handleAppBarMapButtonTouchTap} >
-            {Map}
+            onTouchTap={this.handleAppBarSearchButtonTouchTap} >
+            {Search}
           </IconButton>
         </div>
         <div style={styles.appBarIconButtonContainer}>

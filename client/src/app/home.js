@@ -47,7 +47,7 @@ playList = [
     state: { S : "open"},
     joinList: ["userId1", "userId2"],
     maxJoin: { S : "99" },
-    content : { S : "아번 주 일요일 아침 6시 보라매공원에서 테니스 복식 같이 쳐요" }
+    content : { S : "아번 주 일요일 아침 6시 보라매공원에서" }
   },
   {
     index: { S : "userId2_1471575141450"},

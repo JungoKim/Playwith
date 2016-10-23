@@ -17,6 +17,24 @@ var SelectTarget = React.createClass({
     };
   },
 
+  componentWillMount: function () {
+    this.gameItems = [ { payload: '1', text: '전체' }, ];
+    for (var i = 1; i <= window.sportsClass.length; i++) {
+      this.gameItems[i] = { payload: (i+1)+'', text: window.sportsClass[i-1] };
+    }
+
+    this.filterItems = [
+      { payload: '1', text: '시간순' },
+      { payload: '2', text: '거리순' },
+    ];
+  },
+
+  componentDidMount: function () {
+  },
+
+  componentWillUpdate: function(nextProps, nextState) {
+  },
+
   render: function() {
     var styles = {
       root:{
@@ -35,19 +53,6 @@ var SelectTarget = React.createClass({
         fontSize : 14,
       },
     };
-
-    this.gameItems = [
-      { payload: '1', text: '전체' },
-      { payload: '2', text: '테니스' },
-      { payload: '3', text: '농구' },
-      { payload: '4', text: '농구' },
-      { payload: '4', text: '농구' },
-    ];
-
-    this.filterItems = [
-      { payload: '1', text: '시간순' },
-      { payload: '2', text: '거리순' },
-    ];
 
     return (
       <div style={styles.root}>
