@@ -16,6 +16,7 @@ var { Card,
   ToolbarGroup,
   ToolbarTitle,
   SelectField,
+  Snackbar,
   RaisedButton } = mui;
 
 var { Colors, Spacing, Typography } = mui.Styles;
@@ -25,6 +26,12 @@ var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
 var MapLocation = require('./svg/map_location.js');
 
+var selectMap;
+var selectLat;
+var selectLng;
+var selectDate;
+var selectTime;
+
 var CreatePlay = React.createClass({
 
   getInitialState: function() {
@@ -33,7 +40,9 @@ var CreatePlay = React.createClass({
       maxMemberValue: '1',
       timeValue: null,
       dateValue: null,
-      mapSelectText : window.textSet.mapSelect
+      mapSelectText : window.textSet.mapSelect,
+      snackbarOpen : false,
+      snackbarMsg : ""
     };
   },
 
@@ -43,18 +52,19 @@ var CreatePlay = React.createClass({
       this.gameItems[i] = { payload: (i+1)+'', text: window.sportsClass[i] };
     }
 
-    this.maxMemberItem = [];
-    for (var i = 0; i < 100; i++) {
-      this.maxMemberItem[i] = { payload: (i+1)+'', text: (i+1)+'명' };
+    this.maxMemberItems = [];
+    for (var i = 0; i < 99; i++) {
+      this.maxMemberItems[i] = { payload: (i+1)+'', text: (i+2)+'명' };
     }
   },
 
   componentDidMount: function () {
+
     var mapOptions = {
       center: new naver.maps.LatLng(window.curLat, window.curLng),
       zoom: 7
     };
-    var map = new naver.maps.Map('searchInMap', mapOptions);
+    selectMap = new naver.maps.Map('searchInMap', mapOptions);
   },
 
   componentWillUpdate: function(nextProps, nextState) {
@@ -179,14 +189,26 @@ var CreatePlay = React.createClass({
     return (
       <div style={styles.root}>
         <Toolbar style={styles.toolbar}>
-          <ToolbarGroup style={{marginLeft: -12}} firstChild={true} float="left">
-            <IconButton style={styles.iconButton} tooltip={window.textSet.back} onTouchTap={this.handleBackButtonTouchTap} >
+          <ToolbarGroup
+            style={{marginLeft: -12}}
+            firstChild={true}
+            float="left" >
+            <IconButton
+              style={styles.iconButton}
+              tooltip={window.textSet.back}
+              onTouchTap={this._handleBackButtonTouchTap} >
               <Back />
             </IconButton>
           </ToolbarGroup>
-          <ToolbarTitle text={window.textSet.createPlay} style={styles.toolbarTitle} />
+          <ToolbarTitle
+            text={window.textSet.createPlay}
+            style={styles.toolbarTitle} />
           <ToolbarGroup float="right">
-            <RaisedButton label={window.textSet.create} secondary={true} style={styles.createButton} />
+            <RaisedButton
+              label={window.textSet.create}
+              secondary={true}
+              style={styles.createButton}
+              onTouchTap={this._handleCreateButtonTouchTap} />
           </ToolbarGroup>
         </Toolbar>
         <Card style={styles.card}>
@@ -198,7 +220,7 @@ var CreatePlay = React.createClass({
               value={this.state.gameValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
               floatingLabelText={window.textSet.gameSelect}
-              onChange={this.handleSelectValuechange.bind(null, 'gameValue')}
+              onChange={this._handleSelectValuechange.bind(null, 'gameValue')}
               menuItems={this.gameItems} />
             <SelectField
               ref="maxMemberSelectField"
@@ -207,8 +229,8 @@ var CreatePlay = React.createClass({
               value={this.state.maxMemberValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
               floatingLabelText={window.textSet.maxMember}
-              onChange={this.handleSelectValuechange.bind(null, 'maxMemberValue')}
-              menuItems={this.maxMemberItem} />
+              onChange={this._handleSelectValuechange.bind(null, 'maxMemberValue')}
+              menuItems={this.maxMemberItems} />
           </CardText>
           <CardText style={styles.descriptionCardText}>
             <TextField
@@ -248,10 +270,12 @@ var CreatePlay = React.createClass({
             <DatePicker
               hintText={window.textSet.date}
               ref="datePicker"
+              onChange={this._handleDatePickerChange}
               formatDate={this.formatDate}
               textFieldStyle={styles.datePicker} />
             <TimePicker
               format="ampm"
+              onChange={this._handleTimePickerChange}
               hintText={window.textSet.time}
               ref="timePicker"
               textFieldStyle={styles.timePicker} />
@@ -268,14 +292,19 @@ var CreatePlay = React.createClass({
               src="./img/map_marker.png" />
           </div>
         </Card>
+        <Snackbar
+          ref="snackbar"
+          open={this.state.snackbarOpen}
+          message={this.state.snackbarMsg}
+          autoHideDuration={1500} />
       </div>
     );
   },
-  handleBackButtonTouchTap: function(e) {
+  _handleBackButtonTouchTap: function(e) {
     window.history.back();
   },
 
-  handleSelectValuechange: function(name, e) {
+  _handleSelectValuechange: function(name, e) {
     var change = {};
     change[name] = e.target.value;
     this.setState(change);
@@ -286,11 +315,19 @@ var CreatePlay = React.createClass({
   },
 
   getMaxMember: function() {
-    return this.maxMemberItems[parseInt(this.state.maxMember)-1].text;
+    return this.maxMemberItems[parseInt(this.state.maxMemberValue)-1].text;
   },
 
   formatDate: function(date) {
     return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+  },
+
+  _handleDatePickerChange: function(event, date) {
+    selectDate = date;
+  },
+
+  _handleTimePickerChange: function(event, date) {
+    selectTime = date;
   },
 
   _handleSearchInMap: function() {
@@ -300,6 +337,47 @@ var CreatePlay = React.createClass({
 
   _handleSearchInMapComplete: function() {
     this.setState({mapSelectText : window.textSet.selectComplete});
+    selectLat = selectMap.getCenter()._lat;
+    selectLng = selectMap.getCenter()._lng;
+    window.scrollTo(0, 0);
+  },
+
+  _handleCreateButtonTouchTap: function() {
+    if (this.refs.descriptionField.getValue().length < 1) {
+      this.setState({snackbarOpen: true, snackbarMsg: "설명을 입력하세요"});
+      return;
+    }
+
+    if (this.refs.locationField.getValue().length < 1) {
+      this.setState({snackbarOpen: true, snackbarMsg: "장소를 입력하세요"});
+      return;
+    }
+
+    if (!selectLat || !selectLng) {
+      this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 선해주세요"});
+      return;
+    }
+
+    if (!selectDate) {
+      this.setState({snackbarOpen: true, snackbarMsg: "날짜를 입력해주세요"});
+      return;
+    }
+
+    if (!selectTime) {
+      this.setState({snackbarOpen: true, snackbarMsg: "시간을 입력해주세요"});
+      return;
+    }
+
+    console.log(this.getGame());
+    console.log(this.getMaxMember());
+    console.log(this.refs.descriptionField.getValue());
+    console.log(this.refs.locationField.getValue());
+    console.log(selectLat + ", " + selectLng);
+
+    var date = selectDate;
+    date.setHours(selectTime.getHours());
+    date.setMinutes(selectTime.getMinutes());
+    console.log(date);
   }
 });
 
