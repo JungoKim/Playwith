@@ -36,6 +36,7 @@ var CreatePlay = React.createClass({
 
   getInitialState: function() {
     return {
+      sent : false,
       gameValue: '1',
       maxMemberValue: '1',
       timeValue: null,
@@ -53,7 +54,7 @@ var CreatePlay = React.createClass({
     }
 
     this.maxMemberItems = [];
-    for (var i = 0; i < 99; i++) {
+    for (var i = 0; i < 49; i++) {
       this.maxMemberItems[i] = { payload: (i+1)+'', text: (i+2)+'명' };
     }
   },
@@ -295,6 +296,7 @@ var CreatePlay = React.createClass({
         <Snackbar
           ref="snackbar"
           open={this.state.snackbarOpen}
+          onRequestClose={this._handleSnackBarClose}
           message={this.state.snackbarMsg}
           autoHideDuration={1500} />
       </div>
@@ -332,11 +334,19 @@ var CreatePlay = React.createClass({
 
   _handleSearchInMap: function() {
     this.setState({mapSelectText : window.textSet.mapSelect});
+
+    if (selectLat || selectLng) {
+      this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 다시 선택해주세요"});
+      return;
+    }
+
+    selectLat = null;
+    selectLng = null;
     window.scrollTo(0, 200);
   },
 
   _handleSearchInMapComplete: function() {
-    this.setState({mapSelectText : window.textSet.selectComplete});
+    this.setState({mapSelectText : window.textSet.selectComplete, snackbarOpen: true, snackbarMsg: "해당 위치로 선택되었습니다"});
     selectLat = selectMap.getCenter()._lat;
     selectLng = selectMap.getCenter()._lng;
     window.scrollTo(0, 0);
@@ -354,7 +364,7 @@ var CreatePlay = React.createClass({
     }
 
     if (!selectLat || !selectLng) {
-      this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 선해주세요"});
+      this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 선택해주세요"});
       return;
     }
 
@@ -377,8 +387,68 @@ var CreatePlay = React.createClass({
     var date = selectDate;
     date.setHours(selectTime.getHours());
     date.setMinutes(selectTime.getMinutes());
+
     console.log(date);
-  }
+    console.log(date.getTime());
+
+    var playInfo = {};
+    playInfo.userId = "1471575141450";//document.user.id;
+    playInfo.desc = this.refs.descriptionField.getValue().substring(0, 1000);
+    playInfo.location = this.refs.locationField.getValue().substring(0, 1000);
+    playInfo.locationLat = selectLat;
+    playInfo.locationLng = selectLng;
+    playInfo.playDate = date.getTime();
+    playInfo.playEvent = this.getGame();
+    playInfo.playEventImage = fineImagebyClass(playInfo.playEvent);
+    playInfo.joinList = [ "https://graph.facebook.com/834827176637705/picture?type=small" ];
+    playInfo.maxJoin = parseInt(this.getMaxMember().replace('명', ''));
+    playInfo.profile = "https://graph.facebook.com/834827176637705/picture?type=small";//document.user.profile_image;
+
+    this.createPlay(playInfo);
+  },
+
+  _handleSnackBarClose: function() {
+     this.setState({snackbarOpen: false});
+  },
+
+  createPlay: function(playInfo) {
+    console.log('createPlay called');
+
+    if (this.state.sent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.setState({sent: true});
+    var url = window.server.url+'/createPlay';
+
+    console.log(playInfo);
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'PUT',
+      data: playInfo,
+      success: function (res) {
+        if (res.message === undefined) {
+          this.setState({snackbarOpen: true, snackbarMsg: "새로운 Play를 생성하였습니다"});
+          setTimeout(
+            function(){
+              this.context.router.transitionTo('home');
+            }.bind(this)
+            , 1000
+          );
+        }
+        else {
+          this.setState({snackbarOpen: true, snackbarMsg: "Play 생성을 실패하였습니다"});
+        }
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({snackbarOpen: true, snackbarMsg: "Play 생성을 실패하였습니다"});
+        this.setState({sent: false});
+      }.bind(this),
+    });
+  },
 });
 
 

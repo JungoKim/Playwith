@@ -51,7 +51,7 @@ var sportsClass = [
 
 var fineImagebyClass = function(className) {
     var image;
-    switch(language) {
+    switch(className) {
     case "축구" :
       image = "./image/soccer.png";
       break;

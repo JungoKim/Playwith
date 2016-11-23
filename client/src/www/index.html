@@ -16,12 +16,17 @@
   <link rel="stylesheet" type="text/css" href="main.css">
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=CFIa7TPXnszkOsjfJYxe"></script>
   <!-- kqG2YtBAIQYHtAPQuDuy CFIa7TPXnszkOsjfJYxe -->
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="language.js"></script>
   <script src="main.js"></script>
   <script>
     var textSet = getTextSetByLanguege("kr");
     getLocation();
+
+    window.server = {}
+    window.server.ip = "52.196.23.127";
+    window.server.port = "4000";
+    window.server.url = "http://"+window.server.ip+":"+window.server.port;
   </script>
 </head>
 
