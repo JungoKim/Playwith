@@ -20,11 +20,13 @@ var { Colors, Spacing, Typography } = mui.Styles;
 var Back = require('./svg/back.js');
 var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
+var LoginSel = require('./login_select.js');
 
 var PlayInfo = React.createClass({
 
   getInitialState: function() {
     return {
+      dialOpen : false,
     };
   },
 
@@ -132,13 +134,17 @@ var PlayInfo = React.createClass({
       <div style={styles.root}>
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup style={{marginLeft: -12}} firstChild={true} float="left">
-            <IconButton style={styles.iconButton} tooltip={window.textSet.back} onTouchTap={this.handleBackButtonTouchTap} >
+            <IconButton style={styles.iconButton} tooltip={window.textSet.back} onTouchTap={this._handleBackButtonTouchTap} >
               <Back />
             </IconButton>
           </ToolbarGroup>
           <ToolbarTitle text={window.textSet.playInfo} style={styles.toolbarTitle} />
           <ToolbarGroup float="right">
-            <RaisedButton label={window.textSet.join} secondary={true} style={styles.joinButton} />
+            <RaisedButton
+              label={window.textSet.join}
+              secondary={true}
+              style={styles.joinButton}
+              onTouchTap={this._handleJoinButtonTouchTap} />
           </ToolbarGroup>
         </Toolbar>
         <Card style={styles.card}>
@@ -176,11 +182,32 @@ var PlayInfo = React.createClass({
           <CardText style={styles.lastCardText}>
           </CardText>
         </Card>
+        <LoginSel
+          openstate={this.state.dialOpen}
+          close={this._loginClose}>
+        </LoginSel>
       </div>
     );
   },
-  handleBackButtonTouchTap: function(e) {
+  _handleBackButtonTouchTap: function(e) {
     window.history.back();
+  },
+
+  _handleJoinButtonTouchTap: function(e) {
+    if (document.user !== undefined) {
+      // call join API
+    }
+    else {
+      this._loginOpen();
+    }
+  },
+
+  _loginOpen: function() {
+    this.setState({dialOpen: true});
+  },
+
+  _loginClose: function() {
+    this.setState({dialOpen: false});
   },
 });
 

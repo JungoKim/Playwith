@@ -355,6 +355,7 @@ var CreatePlay = React.createClass({
     this.setState({mapSelectText : window.textSet.selectComplete, snackbarOpen: true, snackbarMsg: "해당 위치로 선택되었습니다"});
     selectLat = selectMap.getCenter()._lat;
     selectLng = selectMap.getCenter()._lng;
+    console.log(selectLat+", "+selectLng);
     window.scrollTo(0, 0);
   },
 
