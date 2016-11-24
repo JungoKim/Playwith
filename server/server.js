@@ -51,7 +51,7 @@ app.get('/scan', function (req, res) {
 });
 
 // createPlay
-app.put('/createPlay', function (req, res) {
+app.post('/createPlay', function (req, res) {
   console.log("body: " + JSON.stringify(req.body));
 
   var currentTime = new Date().getTime().toString();
@@ -124,7 +124,7 @@ app.put('/createPlay', function (req, res) {
   if (req.body.desc.indexOf('#') !== -1) {
     console.log("desc has tag");
 
-    var words = req.body.mainContent.split(/\s+/);
+    var words = req.body.desc.split(/\s+/);
     var tagSet = new Set();
 
     for (var i in words) {
@@ -164,6 +164,46 @@ app.put('/createPlay', function (req, res) {
       });
     }
   }
+});
+
+app.post('/getPlay', function (req, res) {
+  var params = {
+    TableName: 'playus',
+    IndexName: 'state-playDate-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      state: {
+        ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+        AttributeValueList: [
+          {
+            S: req.body.state,
+          }
+        ],
+      },
+      playDate: {
+        ComparisonOperator: 'GE',
+        AttributeValueList: [
+          {
+            S: req.body.playDate,
+          }
+        ],
+      },
+    },
+    ScanIndexForward: true,
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+    Limit : 5,
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+      res.json(data);
+    }
+  });
 });
 
 var server = app.listen(4000, function () {
