@@ -16,6 +16,20 @@ var Logout = require('./svg/logout.js');
 
 var User = React.createClass({
 
+  componentWillMount: function () {
+    if (document.user === undefined) {
+      console.log("the user isn't logged yet");
+      this.context.router.transitionTo('home');
+      return;
+    }
+  },
+
+  componentDidMount: function () {
+  },
+
+  componentWillUpdate: function(nextProps, nextState) {
+  },
+
   render: function() {
     var styles = {
       root: {
@@ -27,21 +41,35 @@ var User = React.createClass({
       },
     };
 
+    var userName = document.user.name;
+    var profile = "https://graph.facebook.com/"+document.user.id+"/picture?type=small";
+
     return (
       <div style={styles.root}>
         <List>
           <ListItem
-            primaryText="Jungo Kim"
-            leftAvatar={<Avatar src="http://graph.facebook.com/834827176637705/picture?type=small" />} />
+            primaryText={userName}
+            leftAvatar={<Avatar src={profile} />} />
           <ListDivider />
           <ListItem primaryText={window.textSet.myPlay} leftIcon={<MyPlay />} />
           <ListItem primaryText={window.textSet.joinPlay} leftIcon={<JoinPlay />} />
           <ListDivider />
-          <ListItem primaryText={window.textSet.logout} leftIcon={<Logout />} />
+          <ListItem
+            primaryText={window.textSet.logout}
+            leftIcon={<Logout />}
+            onTouchTap={this._handleLogOut} />
         </List>
       </div>
     );
-  }
+  },
+
+  _handleLogOut: function() {
+    console.log('FB Logout Click');
+    this.context.router.transitionTo('home');
+    FB.logout(function(response) {
+      console.log(response);
+    }.bind(this));
+  },
 });
 
 User.contextTypes = {

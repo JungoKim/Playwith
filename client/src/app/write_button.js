@@ -41,7 +41,7 @@ var WriteButton = React.createClass({
   },
 
   handleCreateNewAsksButtonTouchTap : function() {
-    if (true /*document.user !== undefined*/) {
+    if (document.user !== undefined) {
       this.context.router.transitionTo('create_play');
     }
     else {

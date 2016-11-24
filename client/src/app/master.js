@@ -2,21 +2,7 @@ var React = require('react');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 
-var { AppBar,
-      AppCanvas,
-      Dialog,
-      FlatButton,
-      FontIcon,
-      IconButton,
-      EnhancedButton,
-      Menu,
-      Mixins,
-      RaisedButton,
-      Styles,
-      Snackbar,
-      Tab,
-      Tabs,
-      Paper} = require('material-ui');
+var { AppBar } = require('material-ui');
 
 var AppBar = require('./app_bar.js');
 

@@ -10,11 +10,13 @@ var HomeButton = require('./svg/home_button.js');
 var SearchButton = require('./svg/search_button.js');
 var MapButton = require('./svg/map_button.js');
 var UserButton = require('./svg/user_button.js');
+var LoginSel = require('./login_select.js');
 
 var AppBar = React.createClass({
   getInitialState: function() {
     return {
       appBarButtonSelect : window.location.href.split('/#/')[1],
+      dialOpen : false,
     };
   },
 
@@ -74,6 +76,10 @@ var AppBar = React.createClass({
             {User}
           </IconButton>
         </div>
+        <LoginSel
+          openstate={this.state.dialOpen}
+          close={this._loginClose}>
+        </LoginSel>
       </div>
     );
   },
@@ -95,8 +101,21 @@ var AppBar = React.createClass({
   },
 
   handleAppBarUserButtonTouchTap : function() {
-    this.setState({appBarButtonSelect : 'user'});
-    this.context.router.transitionTo('user');
+    if (document.user !== undefined) {
+      this.setState({appBarButtonSelect : 'user'});
+      this.context.router.transitionTo('user');
+    }
+    else {
+      this._loginOpen();
+    }
+  },
+
+  _loginOpen: function() {
+    this.setState({dialOpen: true});
+  },
+
+  _loginClose: function() {
+    this.setState({dialOpen: false});
   },
 
 });

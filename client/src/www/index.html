@@ -15,7 +15,7 @@
 
   <link rel="stylesheet" type="text/css" href="main.css">
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=CFIa7TPXnszkOsjfJYxe"></script>
-  <!-- kqG2YtBAIQYHtAPQuDuy CFIa7TPXnszkOsjfJYxe -->
+  <!--CFIa7TPXnszkOsjfJYxe(localhost) kqG2YtBAIQYHtAPQuDuy(playus.me)-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="language.js"></script>
   <script src="main.js"></script>
@@ -30,23 +30,8 @@
   </script>
 </head>
 
-<body>
+<body onload="init()">
   <div id="app"></div>
-
-  <!-- This script adds the Roboto font to our project. For more detail go to this site:  http://www.google.com/fonts#UsePlace:use/Collection:Roboto:400,300,500 -->
-  <script>
-    var WebFontConfig = {
-      google: { families: [ 'Roboto:400,300,500:latin' ] }
-    };
-    (function() {
-      var wf = document.createElement('script');
-      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-      wf.type = 'text/javascript';
-      wf.async = 'true';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(wf, s);
-    })();
-  </script>
   <script src="app.js"></script>
 </body>
 

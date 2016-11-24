@@ -1,3 +1,102 @@
+function init() {
+
+  var WebFontConfig = {
+    google: { families: [ 'Roboto:400,300,500:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1695439927444429', //1695439927444429(locahost) 1695439260777829(playus.me)
+      cookie     : true,  // enable cookies to allow the server to access the session
+      xfbml      : true,  // parse social plugins on this page
+      version    : 'v2.4', // use version 2.2
+      status     : true,
+      oauth      : true
+    });
+    console.log("FB.init called");
+
+    FB.Event.subscribe('auth.login', function(response) {
+      console.log('logged in');
+    });
+
+    FB.Event.subscribe('auth.logout', function(response) {
+      console.log('logged out');
+      window.location.reload();
+    });
+
+    FB.Event.subscribe('auth.stateChange', function(response) {
+      console.log('auth.stateChange : ' + response);
+    });
+
+    FB.getLoginStatus(function(response) {
+      console.log("FB.getLoginStatus called");
+      var event = new CustomEvent("fbLogin", {
+        detail: {
+            res: response
+        }
+      });
+      document.dispatchEvent(event);
+    }, true);
+  };
+
+    // Load the SDK asynchronously
+  (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  window.loginStatusCallback = function(response) {
+    console.log('loginStatusCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      console.log('response.status is connected');
+      var uid = response.authResponse.userID;
+      var accessToken = response.authResponse.accessToken;
+      console.log('uid is : ' + uid);
+      console.log('accessToken is : ' + accessToken);
+
+      document.fblogin = "connected";
+      // Logged into your app and Facebook.
+
+      FB.api('/me', {fields: 'id,name,email,age_range,gender'}, function(res) {
+        console.log('Successful login for: ' + res.name);
+        document.user = res;
+
+        var event = new CustomEvent("fbUserInfo", {
+          detail: {
+              userInfo: res
+          }
+        });
+        document.dispatchEvent(event);
+
+        console.log(res);
+      }.bind(this));
+
+    } else if (response.status === 'not_authorized') {
+      console.log("the user is logged in to Facebook, but has not authenticated your app");
+      document.fblogin = "not_authorized";
+    } else {
+      console.log("the user isn't logged in to Facebook. Go login");
+      document.fblogin = "not_logged";
+    }
+  }
+}
+
 window.curLat = 37.5666805;
 window.curLng = 126.9784147;
 

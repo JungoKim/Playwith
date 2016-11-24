@@ -48,6 +48,12 @@ var CreatePlay = React.createClass({
   },
 
   componentWillMount: function () {
+    if (document.user === undefined) {
+      console.log("the user isn't logged yet");
+      this.context.router.transitionTo('home');
+      return;
+    }
+
     this.gameItems = [];
     for (var i = 0; i < window.sportsClass.length; i++) {
       this.gameItems[i] = { payload: (i+1)+'', text: window.sportsClass[i] };
