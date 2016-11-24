@@ -152,98 +152,141 @@ var fineImagebyClass = function(className) {
     var image;
     switch(className) {
     case "축구" :
-      image = "./image/soccer.png";
+      image = "./img/soccer.png";
       break;
     case "야구" :
-      image = "./image/basketball.png";
+      image = "./img/basketball.png";
       break;
     case "골프" :
-      image = "./image/golf.png";
+      image = "./img/golf.png";
       break;
     case "자전거" :
-      image = "./image/bicycle.png";
+      image = "./img/bicycle.png";
       break;
     case "농구" :
-      image = "./image/basketball.png";
+      image = "./img/basketball.png";
       break;
     case "테니스" :
-      image = "./image/tennis.png";
+      image = "./img/tennis.png";
       break;
     case "배드민턴" :
-      image = "./image/badminton.png";
+      image = "./img/badminton.png";
       break;
     case "수영" :
-      image = "./image/swimming.png";
+      image = "./img/swimming.png";
       break;
     case "탁구" :
-      image = "./image/tabletennis.png";
+      image = "./img/tabletennis.png";
       break;
     case "당구" :
-      image = "./image/billiards.png";
+      image = "./img/billiards.png";
       break;
     case "스키" :
-      image = "./image/skiing.png";
+      image = "./img/skiing.png";
       break;
     case "배구" :
-      image = "./image/volleyball.png";
+      image = "./img/volleyball.png";
       break;
     case "볼링" :
-      image = "./image/bowling.png";
+      image = "./img/bowling.png";
       break;
     case "복싱" :
-      image = "./image/boxing.png";
+      image = "./img/boxing.png";
       break;
     case "스케이트" :
-      image = "./image/skating.png";
+      image = "./img/skating.png";
       break;
     case "양궁" :
-      image = "./image/archery.png";
+      image = "./img/archery.png";
       break;
     case "마라톤" :
-      image = "./image/marathon.png";
+      image = "./img/marathon.png";
       break;
     case "하키" :
-      image = "./image/hockey.png";
+      image = "./img/hockey.png";
       break;
     case "승마" :
-      image = "./image/horse_riding.png";
+      image = "./img/horse_riding.png";
       break;
     case "격투기" :
-      image = "./image/martial_arts.png";
+      image = "./img/martial_arts.png";
       break;
     case "요트" :
-      image = "./image/yacht.png";
+      image = "./img/yacht.png";
       break;
     case "족구" :
-      image = "./image/foot_volleyball.png";
+      image = "./img/foot_volleyball.png";
       break;
     case "조정" :
-      image = "./image/rowing.png";
+      image = "./img/rowing.png";
       break;
     case "클라이밍" :
-      image = "./image/climbing.png";
+      image = "./img/climbing.png";
       break;
     case "사격" :
-      image = "./image/shooting.png";
+      image = "./img/shooting.png";
       break;
     case "펜싱" :
-      image = "./image/fencing.png";
+      image = "./img/fencing.png";
       break;
     case "경주" :
-      image = "./image/moter_race.png";
+      image = "./img/moter_race.png";
       break;
     case "럭비" :
-      image = "./image/rugby.png";
+      image = "./img/rugby.png";
       break;
     case "게이트볼" :
-      image = "./image/gateball.png";
+      image = "./img/gateball.png";
       break;
     case "수구" :
-      image = "./image/water_polo.png";
+      image = "./img/water_polo.png";
       break;
     default:
       console.log("Please check className parameter!")
       break;
   }
   return image;
+}
+
+function toRad(Value)
+{
+  return Value * Math.PI / 180;
+}
+
+function calcDistance(lat1, lon1, lat2, lon2)
+{
+  var R = 6371; // km
+  var dLat = toRad(lat2-lat1);
+  var dLon = toRad(lon2-lon1);
+  var lat1 = toRad(lat1);
+  var lat2 = toRad(lat2);
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c;
+  return d;
+}
+
+function calcDistKM(lat, lng) {
+  return calcDistance(window.curLat, window.curLng, lat, lng).toFixed(1) + "km";
+}
+
+function displayDate(playDate) {
+  var date = new Date;
+  date.setTime(playDate);
+
+  var year = date.getFullYear();
+  var month = date.getMonth()+1;
+  var day = date.getDate();
+  var dayLabel = date.getDay();
+  var week = new Array('일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일');
+
+  var hour = date.getHours();
+  var minute = date.getMinutes();
+  var ampm = hour > 12 ? '오후' : '오전';
+  hour %= 12;
+  minute = minute === 0 ? '' : minute + "분";
+
+  return year+"년 "+month+'월 '+day+'일 '+week[dayLabel]+", " +ampm+" "+hour+"시 "+minute;
 }

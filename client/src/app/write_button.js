@@ -26,7 +26,7 @@ var WriteButton = React.createClass({
     return (
       <div>
         <FloatingActionButton
-          backgroundColor={Colors.cyan400}
+          backgroundColor="#ff4081"
           style={floatingButtonStyle}
           onTouchTap={this.handleCreateNewAsksButtonTouchTap}>
           <WritePencil data-tip data-for="write" />

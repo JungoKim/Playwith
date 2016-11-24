@@ -63,7 +63,23 @@ var PlayList = React.createClass({
         textAlign: 'center',
         borderRadius: 13,
         background: Colors.grey500,
-      }
+      },
+      descContainer: {
+        color: Colors.lightBlack,
+        fontSize: 14
+      },
+      locationContainer: {
+        color: Colors.darkBlack,
+        fontSize: 14,
+        position: 'relative',
+        top: 6
+      },
+      playDateContainer: {
+        color: Colors.darkBlack,
+        fontSize: 14,
+        position: 'relative',
+        top: 10
+      },
     };
 
     if (this.props.data.length < 1) {
@@ -89,32 +105,37 @@ var PlayList = React.createClass({
       this.list = this.props.data.map(function (play) {
         if (play === null || play === undefined)
           return;
+
+        var distKM = window.calcDistKM(play.locationLat.S, play.locationLng.S);
+        var dispDate = window.displayDate(play.playDate.S);
         return (
           <div>
             <ListDivider />
             <ListItem
               style={{paddingRight: 16}}
-              leftAvatar={<Avatar src={play.playImage.S} style={styles.leftAvataIcon}></Avatar>}
+              leftAvatar={<Avatar src={play.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}
               rightIcon={
                 <div style={styles.rightDiv}>
-                  <Avatar src={play.userProfile.S} style={styles.rightSportsIcon}></Avatar>
-                  <div style={styles.rightJoinStatus}>{play.joinList.length} / {play.maxJoin.S}</div>
+                  <Avatar src={play.profile.S} style={styles.rightSportsIcon}></Avatar>
+                  <div style={styles.rightJoinStatus}>{play.joinList.SS.length} / {play.maxJoin.N}</div>
                 </div>
               }
               primaryText={
                  <span>
-                   {play.playClass.S} <br/>
-                   <span style={{color: Colors.lightBlack, fontSize: 14}}>{play.content.S}</span> <br/>
+                   {play.playEvent.S}
+                   <br/>
+                   <span style={styles.descContainer}>{play.desc.S}</span>
+                   <br/>
+                   <span style={styles.locationContainer}>
+                     <LocationIcon style={styles.location} /> {play.location.S}, {distKM}
+                   </span>
+                   <br/>
+                   <span style={styles.playDateContainer}>
+                     <TimeIcon style={styles.time} /> {dispDate}
+                   </span>
                  </span>
               }
-              secondaryText={
-                <span>
-                  <span style={{color: Colors.darkBlack}}><LocationIcon style={styles.location} /> {play.location.S}, {play.gps.S}</span> <br/>
-                  <span style={{color: Colors.darkBlack}}><TimeIcon style={styles.time} /> {play.playDate.S} 남음</span>
-                </span>
-              }
-              secondaryTextLines={2}
-              onTouchTap={this.handlePlayInfoTouchTap.bind(null, play)} />
+              onTouchTap={this._handlePlayInfoTouchTap.bind(null, play)} />
           </div>
         );
       }.bind(this));
@@ -132,7 +153,7 @@ var PlayList = React.createClass({
     );
   },
 
-  handlePlayInfoTouchTap : function(play, e) {
+  _handlePlayInfoTouchTap : function(play, e) {
     selectedPlay = play;
     this.context.router.transitionTo('play_info');
   },

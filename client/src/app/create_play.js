@@ -343,7 +343,6 @@ var CreatePlay = React.createClass({
 
     if (selectLat || selectLng) {
       this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 다시 선택해주세요"});
-      return;
     }
 
     selectLat = null;
@@ -434,7 +433,7 @@ var CreatePlay = React.createClass({
     $.ajax({
       url: url,
       dataType: 'json',
-      type: 'PUT',
+      type: 'POST',
       data: playInfo,
       success: function (res) {
         if (res.message === undefined) {

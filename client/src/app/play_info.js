@@ -31,6 +31,11 @@ var PlayInfo = React.createClass({
   },
 
   componentWillMount: function () {
+    if (selectedPlay === undefined) {
+      console.log("the selectedPlay is undefined");
+      this.context.router.transitionTo('home');
+      return;
+    }
   },
 
   componentDidMount: function () {
@@ -130,6 +135,9 @@ var PlayInfo = React.createClass({
       }
     };
 
+    var distKM = window.calcDistKM(selectedPlay.locationLat.S, selectedPlay.locationLng.S);
+    var dispDate = window.displayDate(selectedPlay.playDate.S);
+
     return (
       <div style={styles.root}>
         <Toolbar style={styles.toolbar}>
@@ -151,33 +159,22 @@ var PlayInfo = React.createClass({
           <CardHeader
             title={
               <div style={styles.cardTitleText}>
-               {selectedPlay.playClass.S}
+               {selectedPlay.playEvent.S}
               </div>
             }
-            avatar={<Avatar src={selectedPlay.playImage.S} style={styles.leftAvataIcon}></Avatar>}/>
+            avatar={<Avatar src={selectedPlay.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}/>
           <CardText style={styles.cardText}>
-            {selectedPlay.content.S}
+            {selectedPlay.desc.S}
           </CardText>
           <CardText style={styles.cardText}>
-            <LocationIcon style={styles.location} /> {selectedPlay.location.S}, {selectedPlay.gps.S}
+            <LocationIcon style={styles.location} /> {selectedPlay.location.S}, {distKM}
           </CardText>
           <CardText style={styles.cardText}>
-            <TimeIcon style={styles.time} /> {selectedPlay.playDate.S} 남음
+            <TimeIcon style={styles.time} /> {dispDate}
           </CardText>
           <div style={styles.joinMemberContainer}>
-            <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.S) - selectedPlay.joinList.length}{window.textSet.memberLeft}</div>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
-            <Avatar src={selectedPlay.userProfile.S} style={styles.joinMemberAvatar}></Avatar>
+            <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.N) - selectedPlay.joinList.SS.length}{window.textSet.memberLeft}</div>
+            <Avatar src={selectedPlay.profile.S} style={styles.joinMemberAvatar}></Avatar>
           </div>
           <CardText style={styles.lastCardText}>
           </CardText>
