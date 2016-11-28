@@ -181,12 +181,52 @@ app.post('/getPlay', function (req, res) {
         ],
       },
       playDate: {
-        ComparisonOperator: 'GE',
+        ComparisonOperator: 'GT',
         AttributeValueList: [
           {
             S: req.body.playDate,
           }
         ],
+      },
+    },
+    ScanIndexForward: true,
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+    Limit : 5,
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+      res.json(data);
+    }
+  });
+});
+
+app.post('/getPlayByEvent', function (req, res) {
+  var params = {
+    TableName: 'playus',
+    IndexName: 'playEvent-playDate-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      playEvent: {
+	ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+        AttributeValueList: [
+          {
+            S: req.body.playEvent,
+          }
+	],
+      },
+      playDate: {
+        ComparisonOperator: 'GT',
+        AttributeValueList: [
+          {
+            S: req.body.playDate,
+          }
+	],
       },
     },
     ScanIndexForward: true,
