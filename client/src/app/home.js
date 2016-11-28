@@ -89,6 +89,11 @@ var Home = React.createClass({
         width : 'calc(50% - 15px)',
         fontSize : 14,
       },
+      spinner: {
+        margin: '-10px auto',
+        display: 'block',
+        paddingRight: 10
+      },
     };
 
     var moreButton = this.state.playListData.length > 0 ?
@@ -97,7 +102,11 @@ var Home = React.createClass({
           label={window.textSet.more}
           onTouchTap={this._handleMoreButtonTouchTap} />
         : window.playListState === undefined || window.playListState === 'Updating' ?
-          null
+          <CircularProgress
+            style={styles.spinner}
+            mode="indeterminate"
+            color={Colors.cyan400}
+            size={0.5} />
           : <MoreButton
               ref='moreButton'
               label={window.textSet.refresh}
@@ -227,6 +236,8 @@ var Home = React.createClass({
     change[name] = e.target.value;
 
     this.clearPlayList();
+    this.refs.moreButton.showSpinner();
+    this.setState({playListData: playList});
 
     if (e.target.value === '1') {
       this.getPlay(new Date().getTime().toString());
@@ -244,6 +255,7 @@ var Home = React.createClass({
     if (e.target.value === '1') {
       change['playListData'] = playList;
     } else {
+      this.sortPlaylistByDistance();
       change['playListData'] = sortedPlayList;
     }
     lastFilterValue  = e.target.value;

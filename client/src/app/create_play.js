@@ -287,7 +287,6 @@ var CreatePlay = React.createClass({
               ref="timePicker"
               textFieldStyle={styles.timePicker} />
           </CardText>
-          {this.mapContainer}
           <div id='searchInMap' style={styles.map}>
             <RaisedButton
               label={window.textSet.mapSelect}

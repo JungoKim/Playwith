@@ -76,13 +76,13 @@ var PlayList = React.createClass({
         color: Colors.darkBlack,
         fontSize: 14,
         position: 'relative',
-        top: 6
+        top: 10
       },
       playDateContainer: {
         color: Colors.darkBlack,
         fontSize: 14,
         position: 'relative',
-        top: 10
+        top: 6
       },
     };
 
@@ -118,12 +118,12 @@ var PlayList = React.createClass({
                    <br/>
                    <span style={styles.descContainer}>{play.desc.S}</span>
                    <br/>
-                   <span style={styles.locationContainer}>
-                     <LocationIcon style={styles.location} /> {play.location.S}, {distKM}
-                   </span>
-                   <br/>
                    <span style={styles.playDateContainer}>
                      <TimeIcon style={styles.time} /> {dispDate}
+                   </span>
+                   <br/>
+                   <span style={styles.locationContainer}>
+                     <LocationIcon style={styles.location} /> {play.location.S}, {distKM}
                    </span>
                  </span>
               }

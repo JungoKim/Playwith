@@ -39,6 +39,16 @@ var PlayInfo = React.createClass({
   },
 
   componentDidMount: function () {
+    var mapOptions = {
+      center: new naver.maps.LatLng(selectedPlay.locationLat.S, selectedPlay.locationLng.S),
+      zoom: 8
+    };
+    selectMap = new naver.maps.Map('locationInMap', mapOptions);
+
+    var marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(selectedPlay.locationLat.S, selectedPlay.locationLng.S),
+      map: selectMap
+    });
   },
 
   componentWillUpdate: function(nextProps, nextState) {
@@ -132,7 +142,14 @@ var PlayInfo = React.createClass({
         width: 36,
         height: 36,
         marginLeft: 5
-      }
+      },
+      map : {
+        width: 'calc(100% - 32px)',
+        marginRight: 16,
+        marginLeft: 16,
+        marginBottom : 10,
+        height: 150
+      },
     };
 
     var distKM = window.calcDistKM(selectedPlay.locationLat.S, selectedPlay.locationLng.S) + "km";
@@ -167,11 +184,13 @@ var PlayInfo = React.createClass({
             {selectedPlay.desc.S}
           </CardText>
           <CardText style={styles.cardText}>
-            <LocationIcon style={styles.location} /> {selectedPlay.location.S}, {distKM}
-          </CardText>
-          <CardText style={styles.cardText}>
             <TimeIcon style={styles.time} /> {dispDate}
           </CardText>
+          <CardText style={styles.cardText}>
+            <LocationIcon style={styles.location} /> {selectedPlay.location.S}, {distKM}
+          </CardText>
+          <div id='locationInMap' style={styles.map}>
+          </div>
           <div style={styles.joinMemberContainer}>
             <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.N) - selectedPlay.joinList.SS.length}{window.textSet.memberLeft}</div>
             <Avatar src={selectedPlay.profile.S} style={styles.joinMemberAvatar}></Avatar>
