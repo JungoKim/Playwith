@@ -124,6 +124,7 @@ var sportsEvent = [
   "농구",
   "테니스",
   "배드민턴",
+  "조깅",
   "수영",
   "탁구",
   "당구",
@@ -133,7 +134,6 @@ var sportsEvent = [
   "복싱",
   "스케이트",
   "양궁",
-  "마라톤",
   "하키",
   "승마",
   "격투기",
@@ -200,8 +200,8 @@ var fineImagebyEvent = function(eventName) {
     case "양궁" :
       image = "./img/archery.png";
       break;
-    case "마라톤" :
-      image = "./img/marathon.png";
+    case "조깅" :
+      image = "./img/jogging.png";
       break;
     case "하키" :
       image = "./img/hockey.png";

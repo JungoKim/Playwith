@@ -92,6 +92,7 @@ var Home = React.createClass({
       spinner: {
         margin: '-10px auto',
         display: 'block',
+        marginTop: 5,
         paddingRight: 10
       },
     };
@@ -182,9 +183,10 @@ var Home = React.createClass({
               this.setState({playListData: sortedPlayList});
           }.bind(this), 1000);
         }
-        window.playListState = "Updated";
+
         setTimeout( function() {
           this.refs.moreButton.showButton();
+          window.playListState = "Updated";
         }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
@@ -219,9 +221,10 @@ var Home = React.createClass({
               this.setState({playListData: sortedPlayList});
           }.bind(this), 1000);
         }
-        window.playListState = "Updated";
+
         setTimeout( function() {
           this.refs.moreButton.showButton();
+          window.playListState = "Updated";
         }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
