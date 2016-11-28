@@ -37,7 +37,7 @@ var CreatePlay = React.createClass({
   getInitialState: function() {
     return {
       sent : false,
-      gameValue: '1',
+      eventValue: '1',
       maxMemberValue: '1',
       timeValue: null,
       dateValue: null,
@@ -54,9 +54,9 @@ var CreatePlay = React.createClass({
       return;
     }
 
-    this.gameItems = [];
+    this.eventItems = [];
     for (var i = 0; i < window.sportsEvent.length; i++) {
-      this.gameItems[i] = { payload: (i+1)+'', text: window.sportsEvent[i] };
+      this.eventItems[i] = { payload: (i+1)+'', text: window.sportsEvent[i] };
     }
 
     this.maxMemberItems = [];
@@ -136,7 +136,7 @@ var CreatePlay = React.createClass({
         fontSize: 15,
         overflow: 'auto'
       },
-      gameSelectField: {
+      eventSelectField: {
         width : 'calc(50% - 15px)',
         marginRight: 30,
       },
@@ -221,14 +221,14 @@ var CreatePlay = React.createClass({
         <Card style={styles.card}>
           <CardText style={styles.cardText}>
             <SelectField
-              ref="gameSelectField"
-              style={styles.gameSelectField}
+              ref="eventSelectField"
+              style={styles.eventSelectField}
               maxHeight={300}
-              value={this.state.gameValue}
+              value={this.state.eventValue}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
-              floatingLabelText={window.textSet.gameSelect}
-              onChange={this._handleSelectValuechange.bind(null, 'gameValue')}
-              menuItems={this.gameItems} />
+              floatingLabelText={window.textSet.eventSelect}
+              onChange={this._handleSelectValuechange.bind(null, 'eventValue')}
+              menuItems={this.eventItems} />
             <SelectField
               ref="maxMemberSelectField"
               style={styles.maxMemberSelectField}
@@ -318,8 +318,8 @@ var CreatePlay = React.createClass({
     this.setState(change);
   },
 
-  getGame: function() {
-    return this.gameItems[parseInt(this.state.gameValue)-1].text;
+  getEvent: function() {
+    return this.eventItems[parseInt(this.state.eventValue)-1].text;
   },
 
   getMaxMember: function() {
@@ -384,7 +384,7 @@ var CreatePlay = React.createClass({
       return;
     }
 
-    console.log(this.getGame());
+    console.log(this.getEvent());
     console.log(this.getMaxMember());
     console.log(this.refs.descriptionField.getValue());
     console.log(this.refs.locationField.getValue());
@@ -404,7 +404,7 @@ var CreatePlay = React.createClass({
     playInfo.locationLat = selectLat;
     playInfo.locationLng = selectLng;
     playInfo.playDate = date.getTime();
-    playInfo.playEvent = this.getGame();
+    playInfo.playEvent = this.getEvent();
     playInfo.playEventImage = fineImagebyEvent(playInfo.playEvent);
 
     var joinMember = document.user.id+'__'+document.user.id+'__'+document.user.profile_image;

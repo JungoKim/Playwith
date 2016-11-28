@@ -18,6 +18,7 @@ var {
 var PlayList = require('./play_list.js');
 var WriteButton = require('./write_button.js');
 var MoreButton = require('./more-button.js');
+var WritePencil = require('./svg/write_pencil.js');
 
 playList = [];
 sortedPlayList = [];
@@ -49,9 +50,13 @@ var Home = React.createClass({
     ];
 
     if (window.playListState === undefined || window.playListState === "UpdateNeeded") {
-      playList = [];
-      sortedPlayList = [];
-      this.getPlay();
+
+      window.playListState === "Updating";
+      this.clearPlayList();
+      if (lastEventValue === '1')
+        this.getPlay();
+      else
+        this.getPlayByEvent(this.eventItems[parseInt(lastEventValue)-1].text);
     } else if (window.playListState === "Updated"){
       if (this.state.filterValue === '1')
         this.setState({playListData: playList});
@@ -86,6 +91,18 @@ var Home = React.createClass({
       },
     };
 
+    var moreButton = this.state.playListData.length > 0 ?
+        <MoreButton
+          ref='moreButton'
+          label={window.textSet.more}
+          onTouchTap={this._handleMoreButtonTouchTap} />
+        : window.playListState === undefined || window.playListState === 'Updating' ?
+          null
+          : <MoreButton
+              ref='moreButton'
+              label={window.textSet.refresh}
+              onTouchTap={this._handleMoreButtonTouchTap} />;
+
     return (
       <div style={styles.root}>
         <div style={styles.selectFieldContainer}>
@@ -106,13 +123,12 @@ var Home = React.createClass({
         </div>
         <PlayList
           data={this.state.playListData} />
-        <MoreButton
-          ref='moreButton'
-          onTouchTap={this._handleMoreButtonTouchTap} />
+        {moreButton}
         <WriteButton />
       </div>
     );
   },
+
   _handleMoreButtonTouchTap: function() {
     console.log("handleMoreButtonTouchTap");
     console.log(playList);
@@ -131,6 +147,7 @@ var Home = React.createClass({
         this.getPlayByEvent(this.getEvent(), new Date().getTime().toString());
     }
   },
+
   getPlay: function(dateTime) {
     console.log('getPlay called');
     var query = {};
@@ -167,6 +184,7 @@ var Home = React.createClass({
       }.bind(this)
     });
   },
+
   getPlayByEvent: function(playEvent, dateTime) {
     console.log('getPlay called');
     var query = {};
@@ -203,11 +221,13 @@ var Home = React.createClass({
       }.bind(this)
     });
   },
+
   _handleEventSelectValuechange: function(name, e) {
     var change = {};
     change[name] = e.target.value;
-    playList = [];
-    sortedPlayList = [];
+
+    this.clearPlayList();
+
     if (e.target.value === '1') {
       this.getPlay(new Date().getTime().toString());
     } else {
@@ -238,13 +258,16 @@ var Home = React.createClass({
     return this.filterItems[parseInt(this.state.filterValue)-1].text.replace(" ", "");
   },
 
-  sortPlaylistByDistance() {
+  sortPlaylistByDistance: function() {
     sortedPlayList = playList.slice();
     sortedPlayList.sort(function(a, b) {
       return window.calcDistKM(a.locationLat.S, a.locationLng.S) - window.calcDistKM(b.locationLat.S, b.locationLng.S);
     });
   },
-
+  clearPlayList: function() {
+    playList = [];
+    sortedPlayList = [];
+  }
 });
 
 Home.contextTypes = {

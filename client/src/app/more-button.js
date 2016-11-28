@@ -1,6 +1,6 @@
 var React = require('react');
 var mui = require('material-ui');
-var { FlatButton, CircularProgress } = mui;
+var { FlatButton, CircularProgress, RaisedButton } = mui;
 var { Colors, } = mui.Styles;
 
 var MoreButton = React.createClass({
@@ -18,7 +18,6 @@ var MoreButton = React.createClass({
       },
       button: {
         width: '100%',
-        backgroundColor : Colors.white
       },
       spinner: {
         margin: '-10px auto',
@@ -29,9 +28,10 @@ var MoreButton = React.createClass({
 
     var showButtonOrSpinner =
       this.state.show == "showButton" ?
-      <FlatButton
+      <RaisedButton
+        secondary={true}
         onTouchTap={this.props.onTouchTap}
-        label={window.textSet.more}
+        label={this.props.label}
         style={styles.button} />
       : <CircularProgress
         style={styles.spinner}

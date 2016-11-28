@@ -29,6 +29,7 @@ function getTextSetByLanguege(language) {
       text.memberLeft = "명 참여가능";
       text.searchInArea = "이 지역에서 검색";
       text.selectComplete = "선택완료";
+      text.refresh = "새로고침";
       break;
     case "en" :
       text.login = "Sign in";
@@ -56,6 +57,7 @@ function getTextSetByLanguege(language) {
       text.joinPlay = "Join Play";
       text.logout = "Logout";
       text.memberLeft = " spots left";
+      text.refresh = "Refresh";
       break;
     default:
       console.log("Please check language parameter!")

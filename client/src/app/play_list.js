@@ -26,6 +26,10 @@ var PlayList = React.createClass({
         width: "100%",
         maxWidth : 650,
       },
+      listContainer:  {
+        paddingTop: 0,
+        paddingBottom: 0
+      },
       leftAvataIcon: {
         width: 48,
         height: 48,
@@ -90,7 +94,7 @@ var PlayList = React.createClass({
         );
       }();
     } else {
-      this.list = this.props.data.map(function (play) {
+      this.content = this.props.data.map(function (play) {
         if (play === null || play === undefined)
           return;
 
@@ -127,15 +131,18 @@ var PlayList = React.createClass({
           </div>
         );
       }.bind(this));
+
+
+      this.list = <List
+                      style={styles.listContainer} >
+                      {this.content}
+                      <ListDivider />
+                    </List>;
     }
 
     return (
       <div style={styles.root}>
-        <List
-          style={{paddingTop: 0}} >
-          {this.list}
-          <ListDivider />
-        </List>
+        {this.list}
       </div>
     );
   },
