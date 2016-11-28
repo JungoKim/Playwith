@@ -135,7 +135,7 @@ var PlayInfo = React.createClass({
       }
     };
 
-    var distKM = window.calcDistKM(selectedPlay.locationLat.S, selectedPlay.locationLng.S);
+    var distKM = window.calcDistKM(selectedPlay.locationLat.S, selectedPlay.locationLng.S) + "km";
     var dispDate = window.displayDate(selectedPlay.playDate.S);
 
     return (

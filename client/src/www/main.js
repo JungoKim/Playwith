@@ -76,6 +76,7 @@ function init() {
       FB.api('/me', {fields: 'id,name,email,age_range,gender'}, function(res) {
         console.log('Successful login for: ' + res.name);
         document.user = res;
+        document.user.profile_image = "https://graph.facebook.com/"+document.user.id+"/picture?type=small";
 
         var event = new CustomEvent("fbUserInfo", {
           detail: {
@@ -115,7 +116,7 @@ var getLocation = function() {
   }
 }
 
-var sportsClass = [
+var sportsEvent = [
   "축구",
   "야구",
   "골프",
@@ -148,9 +149,9 @@ var sportsClass = [
   "수구"
 ]
 
-var fineImagebyClass = function(className) {
+var fineImagebyEvent = function(eventName) {
     var image;
-    switch(className) {
+    switch(eventName) {
     case "축구" :
       image = "./img/soccer.png";
       break;
@@ -242,7 +243,7 @@ var fineImagebyClass = function(className) {
       image = "./img/water_polo.png";
       break;
     default:
-      console.log("Please check className parameter!")
+      console.log("Please check eventName parameter!")
       break;
   }
   return image;
@@ -269,7 +270,7 @@ function calcDistance(lat1, lon1, lat2, lon2)
 }
 
 function calcDistKM(lat, lng) {
-  return calcDistance(window.curLat, window.curLng, lat, lng).toFixed(1) + "km";
+  return calcDistance(window.curLat, window.curLng, lat, lng).toFixed(1);
 }
 
 function displayDate(playDate) {
@@ -288,5 +289,5 @@ function displayDate(playDate) {
   hour %= 12;
   minute = minute === 0 ? '' : minute + "분";
 
-  return year+"년 "+month+'월 '+day+'일 '+week[dayLabel]+", " +ampm+" "+hour+"시 "+minute;
+  return month+'월 '+day+'일 '+week[dayLabel]+", " +ampm+" "+hour+"시 "+minute;
 }

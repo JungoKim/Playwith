@@ -13,7 +13,7 @@ function getTextSetByLanguege(language) {
       text.join = "참여하기";
       text.create = "생성";
       text.description = "설명";
-      text.gameSelect = "종목";
+      text.eventSelect = "종목";
       text.filterSelect = "정렬";
       text.location = "장소";
       text.search = "# 검색";
@@ -42,7 +42,7 @@ function getTextSetByLanguege(language) {
       text.join = "Join";
       text.create = "Create";
       text.description = "desc";
-      text.gameSelect = "Select sports";
+      text.eventSelect = "Select sports";
       text.filterSelect = "Filter";
       text.location = "Location";
       text.search = "# Search";

@@ -90,23 +90,11 @@ var PlayList = React.createClass({
         );
       }();
     } else {
-      this.more = function () {
-        return (
-          <div>
-            <ListItem
-              primaryText={
-                <div style={{color: Colors.darkBlack, fontSize: 14, textAlign: "center"}}>{window.textSet.more}</div>
-              } />
-            <ListDivider />
-          </div>
-        );
-      }();
-
       this.list = this.props.data.map(function (play) {
         if (play === null || play === undefined)
           return;
 
-        var distKM = window.calcDistKM(play.locationLat.S, play.locationLng.S);
+        var distKM = window.calcDistKM(play.locationLat.S, play.locationLng.S) + "km";
         var dispDate = window.displayDate(play.playDate.S);
         return (
           <div>
@@ -147,7 +135,6 @@ var PlayList = React.createClass({
           style={{paddingTop: 0}} >
           {this.list}
           <ListDivider />
-          {this.more}
         </List>
       </div>
     );

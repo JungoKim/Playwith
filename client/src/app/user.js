@@ -42,7 +42,7 @@ var User = React.createClass({
     };
 
     var userName = document.user.name;
-    var profile = "https://graph.facebook.com/"+document.user.id+"/picture?type=small";
+    var profile = document.user.profile_image;
 
     return (
       <div style={styles.root}>

@@ -55,8 +55,8 @@ var CreatePlay = React.createClass({
     }
 
     this.gameItems = [];
-    for (var i = 0; i < window.sportsClass.length; i++) {
-      this.gameItems[i] = { payload: (i+1)+'', text: window.sportsClass[i] };
+    for (var i = 0; i < window.sportsEvent.length; i++) {
+      this.gameItems[i] = { payload: (i+1)+'', text: window.sportsEvent[i] };
     }
 
     this.maxMemberItems = [];
@@ -398,17 +398,19 @@ var CreatePlay = React.createClass({
     console.log(date.getTime());
 
     var playInfo = {};
-    playInfo.userId = "1471575141450";//document.user.id;
+    playInfo.userId = document.user.id;
     playInfo.desc = this.refs.descriptionField.getValue().substring(0, 1000);
     playInfo.location = this.refs.locationField.getValue().substring(0, 1000);
     playInfo.locationLat = selectLat;
     playInfo.locationLng = selectLng;
     playInfo.playDate = date.getTime();
     playInfo.playEvent = this.getGame();
-    playInfo.playEventImage = fineImagebyClass(playInfo.playEvent);
-    playInfo.joinList = [ "https://graph.facebook.com/834827176637705/picture?type=small" ];
+    playInfo.playEventImage = fineImagebyEvent(playInfo.playEvent);
+
+    var joinMember = document.user.id+'__'+document.user.id+'__'+document.user.profile_image;
+    playInfo.joinList = [ joinMember ];
     playInfo.maxJoin = parseInt(this.getMaxMember().replace('명', ''));
-    playInfo.profile = "https://graph.facebook.com/834827176637705/picture?type=small";//document.user.profile_image;
+    playInfo.profile = document.user.profile_image;
 
     this.createPlay(playInfo);
   },
@@ -440,6 +442,7 @@ var CreatePlay = React.createClass({
           this.setState({snackbarOpen: true, snackbarMsg: "새로운 Play를 생성하였습니다"});
           setTimeout(
             function(){
+              window.playListState = "UpdateNeeded";
               this.context.router.transitionTo('home');
             }.bind(this)
             , 1000
