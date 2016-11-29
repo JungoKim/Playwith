@@ -247,6 +247,7 @@ app.post('/getPlayByEvent', function (req, res) {
 });
 
 app.post('/getPlayByLocation', function (req, res) {
+  var now =  new Date().getTime();
   var params = {
     TableName: 'playus',
     IndexName: 'state-locationLng-index',
@@ -283,7 +284,15 @@ app.post('/getPlayByLocation', function (req, res) {
             S: req.body.locationLat2,
           }
         ]
-      }
+      },
+      playDate: {
+        ComparisonOperator: 'GT', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+        AttributeValueList: [
+          {
+            S: now.toString(),
+          }
+        ],
+      },
     },
     ScanIndexForward: true,
     ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
