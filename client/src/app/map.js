@@ -8,16 +8,30 @@ var {
   CircularProgress,
   RaisedButton } = mui;
 
+var {Colors, Spacing, Typography} = mui.Styles;
+
 var searchMap;
+var searchMapPlayList = [];
+searchMapCenterLat = 0;
+searchMapCenterLng = 0;
 
 var Map = React.createClass({
   getInitialState: function() {
     return {
+      showSpinner : false,
     };
   },
 
   componentWillMount: function () {
     console.log("componentWillMount");
+
+    if (!searchMapCenterLat)
+      searchMapCenterLat = window.curLat;
+
+    if (!searchMapCenterLng)
+      searchMapCenterLng = window.curLng;
+
+    searchMapPlayList = [];
   },
 
   componentDidMount: function () {
@@ -40,34 +54,56 @@ var Map = React.createClass({
         position : 'fixed',
         bottom: 30,
         left: (window.innerWidth-124)/2
+      },
+      spinner : {
+        position : 'fixed',
+        bottom: 25,
+        left: (window.innerWidth-40)/2
       }
     };
+
+    var searchButton = this.state.showSpinner === true ?
+          <CircularProgress
+            style={styles.spinner}
+            mode="indeterminate"
+            color={Colors.pink400}
+            size={0.5} />
+          : <RaisedButton
+              label={window.textSet.searchInArea}
+              style={styles.searchButton}
+              onTouchTap={this._handleSearchButtonTouchTap}
+              primary={true} />;
 
     return (
       <div>
         <div id='map' style={styles.root}>
         </div>
-        <RaisedButton
-          label={window.textSet.searchInArea}
-          style={styles.searchButton}
-          onTouchTap={this._handleSearchButtonTouchTap}
-          primary={true} />
+       {searchButton}
       </div>
     );
   },
 
   createMap: function() {
     var mapOptions = {
-      center: new naver.maps.LatLng(window.curLat, window.curLng),
+      center: new naver.maps.LatLng(searchMapCenterLat, searchMapCenterLng),
        zoom: 7
     };
     searchMap = new naver.maps.Map('map', mapOptions);
+
+    naver.maps.Event.addListener(searchMap, 'bounds_changed', function(bounds) {
+      console.log('bounds_changed');
+      searchMapCenterLat = searchMap.getCenter()._lat;
+      searchMapCenterLng = searchMap.getCenter()._lng;
+    });
   },
   _handleSearchButtonTouchTap: function() {
     this.getPlayByLocation();
   },
   getPlayByLocation : function() {
     console.log(searchMap.getBounds());
+
+    this.setState({showSpinner: true});
+
     var lat1 = searchMap.getBounds()._min._lat;
     var lng1 = searchMap.getBounds()._min._lng;
     var lat2 = searchMap.getBounds()._max._lat;
@@ -98,12 +134,18 @@ var Map = React.createClass({
             if (play === null || play === undefined)
               return;
 
+            if (searchMapPlayList.find(function(obj){return obj.index.S === play.index.S}) !== undefined) {
+              return;
+            } else {
+              searchMapPlayList.push(play);
+            }
+
             var marker = new naver.maps.Marker({
               position: new naver.maps.LatLng(play.locationLat.S, play.locationLng.S),
               map: searchMap,
               icon: {
                 content: [
-                  '<img height="42" width="42" id='+play.index.S+' src='+play.playEventImage.S+' />',
+                  '<img height="42" style="z-index:100" width="42" id='+play.index.S+' src='+play.playEventImage.S+' />',
                 ].join(''),
                 size: new naver.maps.Size(42, 42),
                 anchor: new naver.maps.Point(21, 21),
@@ -114,9 +156,15 @@ var Map = React.createClass({
             }.bind(this));
           }.bind(this));
         }
+        setTimeout( function() {
+          this.setState({showSpinner: false});
+        }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
         console.error(this.props.url, status, err.toString());
+        setTimeout( function() {
+          this.setState({showSpinner: false});
+        }.bind(this), 1000);
       }.bind(this)
     });
   },
