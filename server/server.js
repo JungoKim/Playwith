@@ -115,8 +115,40 @@ app.post('/createPlay', function (req, res) {
     }
     else {
       console.log(JSON.stringify(data));
-      if (JSON.stringify(data) === "{}")
-        res.json('{"result" : "New play created"}');
+      if (JSON.stringify(data) === "{}") {
+        var playusJoinIndex = playusIndex + '_' + userId + '_' + currentTime;
+        var playusJoinParams = {
+          Item: {
+            "index": {
+              "S": playusJoinIndex
+            },
+            "date": {
+              "S": currentTime
+            },
+            "playusIndex": {
+              "S": playusIndex
+            },
+            "userId": {
+              "S": userId
+            },
+          },
+          TableName: 'playusJoin'
+        };
+
+        dynamodb.putItem(playusJoinParams, function (err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            res.json(err);
+            return;
+          }
+          else {
+            console.log(JSON.stringify(data));
+            if (JSON.stringify(data) === "{}") {
+              res.json('{"result" : "New play created"}');
+            }
+          }
+        });
+      }
     }
   });
 
