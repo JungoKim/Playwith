@@ -13,6 +13,7 @@ var { Card,
   Toolbar,
   ToolbarGroup,
   ToolbarTitle,
+  Snackbar,
   RaisedButton } = mui;
 
 var { Colors, Spacing, Typography } = mui.Styles;
@@ -26,13 +27,19 @@ var PlayInfo = React.createClass({
 
   getInitialState: function() {
     return {
+      playInfoData : selectedPlay,
       dialOpen : false,
+      joinPlaySent : false,
+      editPlaySend : false,
+      joinCancelSent: false,
+      snackbarOpen : false,
+      snackbarMsg : ""
     };
   },
 
   componentWillMount: function () {
-    if (selectedPlay === undefined) {
-      console.log("the selectedPlay is undefined");
+    if (this.state.playInfoData === undefined) {
+      console.log("the this.state.playInfoData is undefined");
       this.context.router.transitionTo('home');
       return;
     }
@@ -40,13 +47,13 @@ var PlayInfo = React.createClass({
 
   componentDidMount: function () {
     var mapOptions = {
-      center: new naver.maps.LatLng(selectedPlay.locationLat.S, selectedPlay.locationLng.S),
+      center: new naver.maps.LatLng(this.state.playInfoData.locationLat.S, this.state.playInfoData.locationLng.S),
       zoom: 8
     };
     selectMap = new naver.maps.Map('locationInMap', mapOptions);
 
     var marker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(selectedPlay.locationLat.S, selectedPlay.locationLng.S),
+      position: new naver.maps.LatLng(this.state.playInfoData.locationLat.S, this.state.playInfoData.locationLng.S),
       map: selectMap
     });
   },
@@ -152,8 +159,55 @@ var PlayInfo = React.createClass({
       },
     };
 
-    var distKM = window.calcDistKM(selectedPlay.locationLat.S, selectedPlay.locationLng.S) + "km";
-    var dispDate = window.displayDate(selectedPlay.playDate.S);
+    var button = function () {
+      if (document.user === undefined) {
+        return (
+          <RaisedButton
+            label={window.textSet.join}
+            secondary={true}
+            style={styles.joinButton}
+            onTouchTap={this._handleJoinButtonTouchTap} />
+        );
+      } else if (document.user.id === this.state.playInfoData.userId.S) {
+        return (
+          <RaisedButton
+            label={window.textSet.edit}
+            secondary={true}
+            style={styles.joinButton}
+            onTouchTap={this._handleEditButtonTouchTap} />
+        );
+      } else if (this.checkAlreadyJoin(document.user.id) === true) {
+        return (
+          <RaisedButton
+            label={window.textSet.joinCancel}
+            secondary={true}
+            style={styles.joinButton}
+            onTouchTap={this._handleJoinCancelButtonTouchTap} />
+        );
+      } else {
+        return (
+          <RaisedButton
+            label={window.textSet.join}
+            secondary={true}
+            style={styles.joinButton}
+            onTouchTap={this._handleJoinButtonTouchTap} />
+        );
+      }
+    }.bind(this)();
+
+    var joinMembers = this.state.playInfoData.joinList.SS.map(function (joinMember) {
+      var profile = joinMember.split('__')[2];
+      console.log(profile);
+      return (
+        <Avatar
+          src={profile}
+          style={styles.joinMemberAvatar}>
+        </Avatar>
+      );
+    });
+
+    var distKM = window.calcDistKM(this.state.playInfoData.locationLat.S, this.state.playInfoData.locationLng.S) + "km";
+    var dispDate = window.displayDate(this.state.playInfoData.playDate.S);
 
     return (
       <div style={styles.root}>
@@ -165,35 +219,31 @@ var PlayInfo = React.createClass({
           </ToolbarGroup>
           <ToolbarTitle text={window.textSet.playInfo} style={styles.toolbarTitle} />
           <ToolbarGroup float="right">
-            <RaisedButton
-              label={window.textSet.join}
-              secondary={true}
-              style={styles.joinButton}
-              onTouchTap={this._handleJoinButtonTouchTap} />
+            {button}
           </ToolbarGroup>
         </Toolbar>
         <Card style={styles.card}>
           <CardHeader
             title={
               <div style={styles.cardTitleText}>
-               {selectedPlay.playEvent.S}
+               {this.state.playInfoData.playEvent.S}
               </div>
             }
-            avatar={<Avatar src={selectedPlay.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}/>
+            avatar={<Avatar src={this.state.playInfoData.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}/>
           <CardText style={styles.cardText}>
-            {selectedPlay.desc.S}
+            {this.state.playInfoData.desc.S}
           </CardText>
           <CardText style={styles.cardText}>
             <TimeIcon style={styles.time} /> {dispDate}
           </CardText>
           <CardText style={styles.cardText}>
-            <LocationIcon style={styles.location} /> {selectedPlay.location.S}, {distKM}
+            <LocationIcon style={styles.location} /> {this.state.playInfoData.location.S}, {distKM}
           </CardText>
           <div id='locationInMap' style={styles.map}>
           </div>
           <div style={styles.joinMemberContainer}>
-            <div style={styles.joinStatus}>{parseInt(selectedPlay.maxJoin.N) - selectedPlay.joinList.SS.length}{window.textSet.memberLeft}</div>
-            <Avatar src={selectedPlay.profile.S} style={styles.joinMemberAvatar}></Avatar>
+            <div style={styles.joinStatus}>{parseInt(this.state.playInfoData.maxJoin.N) - this.state.playInfoData.joinList.SS.length}{window.textSet.memberLeft}</div>
+            {joinMembers}
           </div>
           <CardText style={styles.lastCardText}>
           </CardText>
@@ -202,28 +252,99 @@ var PlayInfo = React.createClass({
           openstate={this.state.dialOpen}
           close={this._loginClose}>
         </LoginSel>
+        <Snackbar
+          ref="snackbar"
+          open={this.state.snackbarOpen}
+          onRequestClose={this._handleSnackBarClose}
+          message={this.state.snackbarMsg}
+          autoHideDuration={1500} />
       </div>
     );
   },
+
+  _handleSnackBarClose: function() {
+     this.setState({snackbarOpen: false});
+  },
+
   _handleBackButtonTouchTap: function(e) {
     window.history.back();
   },
 
   _handleJoinButtonTouchTap: function(e) {
     if (document.user !== undefined) {
-      // call join API
+      console.log('_handleJoinButtonTouchTap');
+      var joinInfo = {};
+      joinInfo.playusIndex = this.state.playInfoData.index.S;
+      joinInfo.userId = document.user.id;
+      joinInfo.joinMember = document.user.id+'__'+document.user.name+'__'+document.user.profile_image;
+      this.joinPlay(joinInfo);
     }
     else {
       this._loginOpen();
     }
   },
 
+  _handleJoinCancelButtonTouchTap: function(e) {
+    console.log('_handleJoinCancelButtonTouchTap');
+  },
+
+  _handleEditButtonTouchTap: function(e) {
+    console.log('_handleEditButtonTouchTap');
+  },
+
+  checkAlreadyJoin: function(userId) {
+    var result = this.state.playInfoData.joinList.SS.find(function(user){
+      return user.split('__')[0] === userId;
+    });
+    if (result === undefined)
+      return false;
+    else
+      return true;
+  },
+
   _loginOpen: function() {
     this.setState({dialOpen: true});
   },
 
-  _loginClose: function() {
+  _loginClose: function(joinInfo) {
     this.setState({dialOpen: false});
+  },
+  joinPlay: function(joinInfo) {
+    if (this.state.joinPlaySent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.setState({joinPlaySent: true});
+    var url = window.server.url+'/joinPlay';
+
+    console.log(joinInfo);
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: joinInfo,
+      success: function (recievedData) {
+        console.log(recievedData);
+        if (recievedData !== undefined) {
+          if (recievedData.Item) {
+            this.setState({snackbarOpen: true, snackbarMsg: "참여하기가 완료되었습니다.", playInfoData: recievedData.Item});
+            window.playListState = "UpdateNeeded";
+          } else {
+            if (recievedData === '{"result" : "Error, Join list was full"}')
+              this.setState({snackbarOpen: true, snackbarMsg: "정원초과로 참여할 수 없습니다."});
+            else if (recievedData === '{"result" : "Error, Already join"}')
+              this.setState({snackbarOpen: true, snackbarMsg: "이미 참여한 Play 입니다."});
+          }
+        }
+        this.setState({joinPlaySent: false});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({snackbarOpen: true, snackbarMsg: "참여하기 실패..."});
+        this.setState({joinPlaySent: false});
+      }.bind(this),
+    });
   },
 });
 
