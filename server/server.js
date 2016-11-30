@@ -343,6 +343,106 @@ app.post('/getPlayByLocation', function (req, res) {
   });
 });
 
+app.post('/joinPlay', function (req, res) {
+  var playusIndex = req.body.playusIndex;
+  var userId = req.body.userId;
+  var joinMember = req.body.joinMember;
+
+  var params = {
+    Key: {
+      "index": {
+        "S": playusIndex
+      }
+    },
+    TableName: 'playus',
+    ConsistentRead: true
+  };
+
+  dynamodb.getItem(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+
+      var joinList = data.Item.joinList.SS;
+
+      if (parseInt(data.Item.maxJoin.N) <= joinList.length){
+        res.json('{"result" : "Error, Join list was full"}');
+        return;
+      }
+
+      for(var i = 0; i < joinList.length; i++) {
+        if (joinList[i].split('__')[0] === userId) {
+          res.json('{"result" : "Error, Already join"}');
+          return;
+        }
+      }
+
+      joinList.push(joinMember);
+      playInfoData = data;
+
+      var currentTime = new Date().getTime().toString();
+      var playusJoinIndex = playusIndex + '_' + userId + '_' + currentTime;
+      var playusJoinParams = {
+        Item: {
+          "index": {
+            "S": playusJoinIndex
+          },
+          "date": {
+            "S": currentTime
+          },
+          "playusIndex": {
+            "S": playusIndex
+          },
+          "userId": {
+            "S": userId
+          },
+        },
+        TableName: 'playusJoin'
+      };
+
+      dynamodb.putItem(playusJoinParams, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          res.json(err);
+          return;
+        }
+        else {
+          console.log(JSON.stringify(data));
+          if (JSON.stringify(data) === "{}") {
+            var joinListEditParams = {
+              Key: {
+                "index": {
+                  "S": playusIndex
+                }
+              },
+              TableName: 'playus',
+              AttributeUpdates: {
+                "joinList": {
+                  Action: 'PUT',
+                  Value: {
+                    "SS": joinList
+                  }
+                },
+              }
+           };
+
+           dynamodb.updateItem(joinListEditParams, function (err, data) {
+             if (err)
+               console.log(err, err.stack);
+             else
+               console.log(data);
+           });
+          }
+          res.json(playInfoData);
+        }
+      });
+    }
+  });
+});
+
 var server = app.listen(4000, function () {
   var host = server.address().address;
   var port = server.address().port;
