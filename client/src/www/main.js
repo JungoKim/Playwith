@@ -29,6 +29,12 @@ function init() {
 
     FB.Event.subscribe('auth.logout', function(response) {
       console.log('logged out');
+      var event = new CustomEvent("fbLogout", {
+        detail: {
+            res: response
+        }
+      });
+      document.dispatchEvent(event);
       window.location.reload();
     });
 
@@ -156,7 +162,7 @@ var fineImagebyEvent = function(eventName) {
       image = "./img/soccer.png";
       break;
     case "야구" :
-      image = "./img/basketball.png";
+      image = "./img/baseball.png";
       break;
     case "골프" :
       image = "./img/golf.png";

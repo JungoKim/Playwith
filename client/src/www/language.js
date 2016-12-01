@@ -31,6 +31,7 @@ function getTextSetByLanguege(language) {
       text.selectComplete = "선택완료";
       text.joinCancel = "참여취소";
       text.edit = "편집하기";
+      text.refresh = "새로고침";
       break;
     case "en" :
       text.login = "Sign in";

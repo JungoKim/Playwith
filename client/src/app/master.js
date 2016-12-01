@@ -43,6 +43,15 @@ var Master = React.createClass({
         this.setState({snackbarOpen: true, snackbarMsg: loginMsg});
       }.bind(this)
     );
+
+    document.addEventListener("fbLogout",
+      function statusChangeCallback(e) {
+        console.log('master fbLogout statusChangeCallback');
+        var logoutMsg = "로그아웃 되었습니다.";
+        this.setState({snackbarOpen: true, snackbarMsg: logoutMsg});
+      }.bind(this)
+    );
+
   },
 
   render: function() {
