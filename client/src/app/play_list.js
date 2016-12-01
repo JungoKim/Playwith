@@ -28,7 +28,8 @@ var PlayList = React.createClass({
       },
       listContainer:  {
         paddingTop: 0,
-        paddingBottom: 0
+        paddingBottom: 0,
+        marginTop: 2
       },
       leftAvataIcon: {
         width: 48,

@@ -24,7 +24,7 @@ function getTextSetByLanguege(language) {
       text.mapSelect = "지도에서 선택";
       text.more = "더보기";
       text.myPlay = "나의 Play 목록";
-      text.joinPlay = "참여한 Play 목";
+      text.joinPlay = "참여한 Play 목록";
       text.logout = "로그아웃";
       text.memberLeft = "명 참여가능";
       text.searchInArea = "이 지역에서 검색";
