@@ -84,6 +84,7 @@ var User = React.createClass({
 
   _handleJoinPlay: function() {
     console.log('_handleMyPlay Click');
+    this.context.router.transitionTo('join_play');
   },
 });
 

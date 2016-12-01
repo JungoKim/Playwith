@@ -23,18 +23,18 @@ var Back = require('./svg/back.js');
 var PlayList = require('./play_list.js');
 var MoreButton = require('./more-button.js');
 
-myPlayList = [];
+joinPlayList = [];
 
-var MyPlay = React.createClass({
+var JoinPlay = React.createClass({
   getInitialState: function() {
     return {
-      playListData: myPlayList,
+      playListData: joinPlayList,
     };
   },
 
   componentWillMount: function () {
     console.log('myPlay componentWillMount called');
-    console.log('window.myPlayListState is ', window.myPlayListState);
+    console.log('window.joinPlayListState is ', window.joinPlayListState);
 
     if (document.user === undefined) {
       console.log("the user isn't logged yet");
@@ -42,12 +42,12 @@ var MyPlay = React.createClass({
       return;
     }
 
-    if (window.myPlayListState === undefined || window.myPlayListState === "UpdateNeeded") {
-      window.myPlayListState === "Updating";
+    if (window.joinPlayListState === undefined || window.joinPlayListState === "UpdateNeeded") {
+      window.joinPlayListState === "Updating";
       this.clearPlayList();
-      this.getMyPlay();
-    } else if (window.myPlayListState === "Updated"){
-      this.setState({playListData: myPlayList});
+      this.getMyJoinPlay();
+    } else if (window.joinPlayListState === "Updated"){
+      this.setState({playListData: joinPlayList});
     }
   },
 
@@ -89,7 +89,7 @@ var MyPlay = React.createClass({
           ref='moreButton'
           label={window.textSet.more}
           onTouchTap={this._handleMoreButtonTouchTap} />
-        : window.myPlayListState === undefined || window.myPlayListState !== 'Updated' ?
+        : window.joinPlayListState === undefined || window.joinPlayListState !== 'Updated' ?
           <CircularProgress
             style={styles.spinner}
             mode="indeterminate"
@@ -115,7 +115,7 @@ var MyPlay = React.createClass({
           </IconButton>
         </ToolbarGroup>
         <ToolbarTitle
-          text={window.textSet.myPlay}
+          text={window.textSet.joinPlay}
           style={styles.toolbarTitle} />
         </Toolbar>
         <PlayList
@@ -127,18 +127,18 @@ var MyPlay = React.createClass({
 
   _handleMoreButtonTouchTap: function() {
     console.log("handleMoreButtonTouchTap");
-    console.log(myPlayList);
-    console.log(myPlayList.length);
+    console.log(joinPlayList);
+    console.log(joinPlayList.length);
 
     this.refs.moreButton.showSpinner();
-    if (myPlayList.length > 0) {
-      this.getMyPlay(myPlayList[myPlayList.length-1].date.S);
+    if (joinPlayList.length > 0) {
+      this.getMyJoinPlay(joinPlayList[joinPlayList.length-1].date.S);
     } else {
-      this.getMyPlay(new Date().getTime().toString());
+      this.getMyJoinPlay(new Date().getTime().toString());
     }
   },
 
-  getMyPlay: function(dateTime) {
+  getMyJoinPlay: function(dateTime) {
     console.log('getPlay called');
     var query = {};
     var now = new Date().getTime();
@@ -146,24 +146,25 @@ var MyPlay = React.createClass({
     query.date = dateTime ? dateTime : now;
 
     $.ajax({
-      url: window.server.url+'/getMyPlay',
+      url: window.server.url+'/getMyJoinPlay',
       dataType: 'json',
       data : query,
       type: 'POST',
       cache: false,
       success: function (recievedData) {
-        console.log(recievedData.Items);
-        if (recievedData.Items !== undefined) {
-          myPlayList = myPlayList.concat(recievedData.Items);
-          setTimeout( function() {
-            this.setState({playListData: myPlayList});
-          }.bind(this), 1000);
+        console.log(recievedData);
+        if (recievedData !== undefined) {
+          if (recievedData.Items) {
+            joinPlayList = joinPlayList.concat(recievedData.Items);
+            setTimeout( function() {
+              this.setState({playListData: joinPlayList});
+            }.bind(this), 1000);
+          }
         }
-
         setTimeout( function() {
           if (this.refs.moreButton)
             this.refs.moreButton.showButton();
-          window.myPlayListState = "Updated";
+          window.joinPlayListState = "Updated";
         }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
@@ -175,7 +176,7 @@ var MyPlay = React.createClass({
   },
 
   clearPlayList: function() {
-    myPlayList = [];
+    joinPlayList = [];
   },
 
   _handleBackButtonTouchTap: function(e) {
@@ -183,8 +184,8 @@ var MyPlay = React.createClass({
   },
 });
 
-MyPlay.contextTypes = {
+JoinPlay.contextTypes = {
   router: React.PropTypes.func
 };
 
-module.exports = MyPlay;
+module.exports = JoinPlay;

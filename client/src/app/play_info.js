@@ -331,6 +331,7 @@ var PlayInfo = React.createClass({
           if (recievedData.Item) {
             this.setState({snackbarOpen: true, snackbarMsg: "참여하기가 완료되었습니다.", playInfoData: recievedData.Item});
             window.playListState = "UpdateNeeded";
+            window.joinPlayListState = "UpdateNeeded";
           } else {
             if (recievedData === '{"result" : "Error, Join list was full"}')
               this.setState({snackbarOpen: true, snackbarMsg: "정원초과로 참여할 수 없습니다."});

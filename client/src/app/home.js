@@ -102,7 +102,7 @@ var Home = React.createClass({
           ref='moreButton'
           label={window.textSet.more}
           onTouchTap={this._handleMoreButtonTouchTap} />
-        : window.playListState === undefined || window.playListState === 'Updating' ?
+        : window.playListState === undefined || window.playListState !== 'Updated' ?
           <CircularProgress
             style={styles.spinner}
             mode="indeterminate"
@@ -223,12 +223,14 @@ var Home = React.createClass({
         }
 
         setTimeout( function() {
-          this.refs.moreButton.showButton();
+          if (this.refs.moreButton)
+            this.refs.moreButton.showButton();
           window.playListState = "Updated";
         }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
-        this.refs.moreButton.showButton();
+        if (this.refs.moreButton)
+          this.refs.moreButton.showButton();
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });

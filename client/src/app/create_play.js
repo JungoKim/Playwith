@@ -443,6 +443,7 @@ var CreatePlay = React.createClass({
             function(){
               window.playListState = "UpdateNeeded";
               window.myPlayListState = "UpdateNeeded";
+              window.joinPlayListState = "UpdateNeeded";
               this.context.router.transitionTo('home');
             }.bind(this)
             , 1000
