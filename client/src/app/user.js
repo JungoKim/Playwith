@@ -51,8 +51,14 @@ var User = React.createClass({
             primaryText={userName}
             leftAvatar={<Avatar src={profile} />} />
           <ListDivider />
-          <ListItem primaryText={window.textSet.myPlay} leftIcon={<MyPlay />} />
-          <ListItem primaryText={window.textSet.joinPlay} leftIcon={<JoinPlay />} />
+          <ListItem
+            onTouchTap={this._handleMyPlay}
+            primaryText={window.textSet.myPlay}
+            leftIcon={<MyPlay />} />
+          <ListItem
+            onTouchTap={this._handleJoinPlay}
+            primaryText={window.textSet.joinPlay}
+            leftIcon={<JoinPlay />} />
           <ListDivider />
           <ListItem
             primaryText={window.textSet.logout}
@@ -69,6 +75,15 @@ var User = React.createClass({
     FB.logout(function(response) {
       console.log(response);
     }.bind(this));
+  },
+
+  _handleMyPlay: function() {
+    console.log('_handleMyPlay Click');
+    this.context.router.transitionTo('my_play');
+  },
+
+  _handleJoinPlay: function() {
+    console.log('_handleMyPlay Click');
   },
 });
 

@@ -11,6 +11,7 @@ var Map = require('./map.js');
 var User = require('./user.js');
 var CreatePlay = require('./create_play.js');
 var PlayInfo = require('./play_info.js');
+var MyPlay = require('./my_play.js');
 
 var AppRoutes = (
   <Route name="root" path="/" handler={Master}>
@@ -20,7 +21,8 @@ var AppRoutes = (
     <Route name="user" handler={User} />
     <Route name="create_play" handler={CreatePlay} />
     <Route name="play_info" handler={PlayInfo} />
-    <DefaultRoute handler={Home}/>
+    <Route name="my_play" handler={MyPlay} />
+    <DefaultRoute handler={Home} />
   </Route>
 );
 

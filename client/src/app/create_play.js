@@ -442,6 +442,7 @@ var CreatePlay = React.createClass({
           setTimeout(
             function(){
               window.playListState = "UpdateNeeded";
+              window.myPlayListState = "UpdateNeeded";
               this.context.router.transitionTo('home');
             }.bind(this)
             , 1000
