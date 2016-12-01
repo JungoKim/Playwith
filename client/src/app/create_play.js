@@ -406,7 +406,7 @@ var CreatePlay = React.createClass({
     playInfo.playEvent = this.getEvent();
     playInfo.playEventImage = fineImagebyEvent(playInfo.playEvent);
 
-    var joinMember = document.user.id+'__'+document.user.id+'__'+document.user.profile_image;
+    var joinMember = document.user.id+'__'+document.user.name+'__'+document.user.profile_image;
     playInfo.joinList = [ joinMember ];
     playInfo.maxJoin = parseInt(this.getMaxMember().replace('명', ''));
     playInfo.profile = document.user.profile_image;
