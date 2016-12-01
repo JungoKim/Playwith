@@ -278,6 +278,46 @@ app.post('/getPlayByEvent', function (req, res) {
   });
 });
 
+app.post('/getMyPlay', function (req, res) {
+  var params = {
+    TableName: 'playus',
+    IndexName: 'userId-date-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      userId: {
+        ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+        AttributeValueList: [
+          {
+            S: req.body.userId,
+          }
+        ],
+      },
+      date: {
+        ComparisonOperator: 'LT',
+        AttributeValueList: [
+          {
+            S: req.body.date,
+          }
+        ],
+      },
+    },
+    ScanIndexForward: false,
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+    Limit : 5,
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+      res.json(data);
+    }
+  });
+});
+
 app.post('/getPlayByLocation', function (req, res) {
   var now =  new Date().getTime();
   var params = {
