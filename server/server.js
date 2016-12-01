@@ -318,6 +318,89 @@ app.post('/getMyPlay', function (req, res) {
   });
 });
 
+app.post('/getMyJoinPlay', function (req, res) {
+  console.log("body: " + JSON.stringify(req.body));
+
+  var params = {
+    TableName: 'playusJoin',
+    IndexName: 'userId-date-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      userId: {
+        ComparisonOperator: 'EQ',
+        AttributeValueList: [
+          {
+            S: req.body.userId,
+          }
+        ],
+      },
+      date: {
+        ComparisonOperator: 'LT',
+        AttributeValueList: [
+          {
+            S: req.body.date,
+          }
+        ],
+      },
+    },
+    ScanIndexForward: false,  // false : reverse order by sort key value
+                              // true : order by sort key value
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+    Limit : 5,
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    } else {
+      console.log(data); // successful response
+
+      if (data.Items.length < 1) {
+        console.log('{result : "data.Items is empty"}');
+        res.json(data);
+        return;
+      }
+
+      var joinPlay = { "Items": [], "Count": 0, "ScanCount": 0 };
+      for (var it = 0; it < data.Items.length; it++) {
+        var params = {
+          Key: {
+            "index": {
+              "S": data.Items[it].playusIndex.S
+            }
+          },
+          TableName: 'playus',
+          ConsistentRead: true
+        };
+
+        dynamodb.getItem(params, function(err, playData) {
+          if (err) {
+            console.log(err); // an error occurred
+          } else {
+            var order;
+            for (order = 0; order < data.Items.length; order++) {
+              if (data.Items[order].playusIndex.S ===
+                  playData.Item.index.S) {
+                break;
+              }
+            }
+            joinPlay.Items[order] = playData.Item;
+            joinPlay.Count++;
+          }
+          joinPlay.ScanCount++;
+
+          if (data.Items.length === joinPlay.ScanCount) {
+            console.log("response joinPlay");
+            console.log(joinPlay);
+            res.json(joinPlay);
+          }
+        });
+      }
+    }
+  });
+})
+
 app.post('/getPlayByLocation', function (req, res) {
   var now =  new Date().getTime();
   var params = {
