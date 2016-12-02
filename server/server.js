@@ -153,7 +153,7 @@ app.post('/createPlay', function (req, res) {
   });
 
   // Find #tags and put tags to yesnoTag table
-  if (req.body.desc.indexOf('#') !== -1) {
+  if (req.body.desc.indexOf('#') !== -1 || req.body.playEvent ) {
     console.log("desc has tag");
 
     var words = req.body.desc.split(/\s+/);
@@ -164,6 +164,7 @@ app.post('/createPlay', function (req, res) {
         tagSet.add(words[i]);
       }
     }
+    tagSet.add('#'+req.body.playEvent);
 
     var tags = tagSet.toArray();
 
@@ -394,6 +395,89 @@ app.post('/getMyJoinPlay', function (req, res) {
             console.log("response joinPlay");
             console.log(joinPlay);
             res.json(joinPlay);
+          }
+        });
+      }
+    }
+  });
+})
+
+app.post('/getPlayByTag', function (req, res) {
+  console.log("body: " + JSON.stringify(req.body));
+
+  var params = {
+    TableName: 'playusTag',
+    IndexName: 'tag-date-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      tag: {
+        ComparisonOperator: 'EQ',
+        AttributeValueList: [
+          {
+            S: req.body.tag,
+          }
+        ],
+      },
+      date: {
+        ComparisonOperator: 'LT',
+        AttributeValueList: [
+          {
+            S: req.body.date,
+          }
+        ],
+      },
+    },
+    ScanIndexForward: false,  // false : reverse order by sort key value
+                              // true : order by sort key value
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+    Limit : 5,
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    } else {
+      console.log(data); // successful response
+
+      if (data.Items.length < 1) {
+        console.log('{result : "data.Items is empty"}');
+        res.json(data);
+        return;
+      }
+
+      var searchPlay = { "Items": [], "Count": 0, "ScanCount": 0 };
+      for (var it = 0; it < data.Items.length; it++) {
+        var params = {
+          Key: {
+            "index": {
+              "S": data.Items[it].playusIndex.S
+            }
+          },
+          TableName: 'playus',
+          ConsistentRead: true
+        };
+
+        dynamodb.getItem(params, function(err, playData) {
+          if (err) {
+            console.log(err); // an error occurred
+          } else {
+            var order;
+            for (order = 0; order < data.Items.length; order++) {
+              if (data.Items[order].playusIndex.S ===
+                  playData.Item.index.S) {
+                break;
+              }
+            }
+            searchPlay.Items[order] = playData.Item;
+            searchPlay.Count++;
+          }
+          searchPlay.ScanCount++;
+
+          if (data.Items.length === searchPlay.ScanCount) {
+            console.log("response searchPlay");
+            console.log(searchPlay);
+            res.json(searchPlay);
           }
         });
       }
