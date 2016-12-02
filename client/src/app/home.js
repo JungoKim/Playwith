@@ -31,7 +31,7 @@ var Home = React.createClass({
     return {
       playListData: playList,
       eventValue: lastEventValue,
-      filterValue: lastFilterValue
+      filterValue: lastFilterValue,
     };
   },
 
@@ -50,7 +50,6 @@ var Home = React.createClass({
     ];
 
     if (window.playListState === undefined || window.playListState === "UpdateNeeded") {
-
       window.playListState === "Updating";
       this.clearPlayList();
       if (lastEventValue === '1')
@@ -177,20 +176,23 @@ var Home = React.createClass({
           playList = playList.concat(recievedData.Items);
           this.sortPlaylistByDistance();
           setTimeout( function() {
+            if (this.refs.moreButton)
+              this.refs.moreButton.showButton();
+
+            window.playListState = "Updated";
+
             if (this.state.filterValue === '1')
               this.setState({playListData: playList});
             else
               this.setState({playListData: sortedPlayList});
           }.bind(this), 1000);
         }
-
-        setTimeout( function() {
-          this.refs.moreButton.showButton();
-          window.playListState = "Updated";
-        }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
-        this.refs.moreButton.showButton();
+        if (this.refs.moreButton)
+          this.refs.moreButton.showButton();
+        window.playListState = "Updated";
+        this.setState({playState: window.playListState});
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -215,22 +217,21 @@ var Home = React.createClass({
           playList = playList.concat(recievedData.Items);
           this.sortPlaylistByDistance();
           setTimeout( function() {
+            if (this.refs.moreButton)
+              this.refs.moreButton.showButton();
+            window.playListState = "Updated";
+
             if (this.state.filterValue === '1')
               this.setState({playListData: playList});
             else
-              this.setState({playListData: sortedPlayList});
+            this.setState({playListData: sortedPlayList});
           }.bind(this), 1000);
         }
-
-        setTimeout( function() {
-          if (this.refs.moreButton)
-            this.refs.moreButton.showButton();
-          window.playListState = "Updated";
-        }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
         if (this.refs.moreButton)
           this.refs.moreButton.showButton();
+        window.playListState = "Updated";
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -284,6 +285,7 @@ var Home = React.createClass({
   clearPlayList: function() {
     playList = [];
     sortedPlayList = [];
+    this.setState({playListData: playList});
   }
 });
 

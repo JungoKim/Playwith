@@ -156,15 +156,12 @@ var MyPlay = React.createClass({
         if (recievedData.Items !== undefined) {
           myPlayList = myPlayList.concat(recievedData.Items);
           setTimeout( function() {
+            if (this.refs.moreButton)
+              this.refs.moreButton.showButton();
+            window.myPlayListState = "Updated";
             this.setState({playListData: myPlayList});
           }.bind(this), 1000);
         }
-
-        setTimeout( function() {
-          if (this.refs.moreButton)
-            this.refs.moreButton.showButton();
-          window.myPlayListState = "Updated";
-        }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
         if (this.refs.moreButton)
@@ -176,6 +173,7 @@ var MyPlay = React.createClass({
 
   clearPlayList: function() {
     myPlayList = [];
+    this.setState({playListData: myPlayList});
   },
 
   _handleBackButtonTouchTap: function(e) {

@@ -157,15 +157,13 @@ var JoinPlay = React.createClass({
           if (recievedData.Items) {
             joinPlayList = joinPlayList.concat(recievedData.Items);
             setTimeout( function() {
+              if (this.refs.moreButton)
+                this.refs.moreButton.showButton();
+              window.joinPlayListState = "Updated";
               this.setState({playListData: joinPlayList});
             }.bind(this), 1000);
           }
         }
-        setTimeout( function() {
-          if (this.refs.moreButton)
-            this.refs.moreButton.showButton();
-          window.joinPlayListState = "Updated";
-        }.bind(this), 1000);
       }.bind(this),
       error: function (xhr, status, erro) {
         if (this.refs.moreButton)
@@ -177,6 +175,7 @@ var JoinPlay = React.createClass({
 
   clearPlayList: function() {
     joinPlayList = [];
+    this.setState({playListData: joinPlayList});
   },
 
   _handleBackButtonTouchTap: function(e) {
