@@ -6,6 +6,7 @@ var mui = require('material-ui');
 
 var {
   Card,
+  CircularProgress,
   FlatButton,
   IconButton,
   TextField,
@@ -19,19 +20,26 @@ var { Colors, Spacing, Typography } = mui.Styles;
 
 var SearchMiniButtion = require('./svg/search_mini_button.js');
 var PlayList = require('./play_list.js');
+var MoreButton = require('./more-button.js');
 
-searchList = [];
+searchPlayList = [];
+lastSearchTag = "";
 
 var Search = React.createClass({
   getInitialState: function() {
     return {
-      result : '',
-      searchListData:[],
+      playListData:[],
+      snackbarOpen : false,
+      snackbarMsg : "",
+      showSpinner : false
     };
+  },
+  componentWillMount: function () {
+    console.log('Search componentWillMount called');
+    this.setState({playListData: searchPlayList});
   },
 
   componentDidMount: function () {
-    this.refs.searchField.focus();
   },
 
   render: function() {
@@ -45,13 +53,35 @@ var Search = React.createClass({
       },
       textFieldStyle: {
         width: 'calc(100% - 66px)',
-        float: 'left',
         marginLeft: 15,
       },
       sendButtonStyle: {
-        float: 'left',
-      }
+        top : 7
+      },
+      playListContainer: {
+      },
+      spinner: {
+        margin: '-10px auto',
+        display: 'block',
+        marginTop: 5,
+        paddingRight: 10
+      },
     };
+
+    var moreButton = this.state.playListData.length > 0 ?
+      <MoreButton
+        ref='moreButton'
+        label={window.textSet.more}
+        onTouchTap={this._handleMoreButtonTouchTap} />
+      : null;
+
+    var spinner = this.state.showSpinner === true ?
+      <CircularProgress
+        style={styles.spinner}
+        mode="indeterminate"
+        color={Colors.cyan400}
+        size={0.5} />
+      : null;
 
     return (
       <div style={styles.root}>
@@ -72,20 +102,112 @@ var Search = React.createClass({
             <SearchMiniButtion />
           </IconButton>
         </div>
-        <PlayList 
-          data={this.state.searchListData} />
+        <div style={styles.playListContainer}>
+          <PlayList
+            data={this.state.playListData} />
+          {moreButton}
+          {spinner}
+        </div>
         <Snackbar
           ref="snackbar"
-          autoHideDuration={1500}
-          message={this.state.result} />
+          open={this.state.snackbarOpen}
+          onRequestClose={this._handleSnackBarClose}
+          message={this.state.snackbarMsg}
+          autoHideDuration={1500} />
       </div>
     );
   },
+
+  _handleSnackBarClose: function() {
+     this.setState({snackbarOpen: false});
+  },
+
   _handleInputChange: function(e) {
   },
+
   _handleEnterKeyDown: function(e) {
+    console.log("search text : " + this.refs.searchField.getValue());
+    if (this.refs.searchField.getValue().length < 1) {
+      this.setState({snackbarOpen: true, snackbarMsg: "검색어를 입력해주세요."});
+      return;
+    }
+    this.setState({showSpinner: true});
+    this.clearPlayList();
+    lastSearchTag = this.refs.searchField.getValue();
+    this.getPlayByTag(lastSearchTag);
   },
+
   _handleSearchButtonTouchTap: function(e) {
+    console.log("search text : " + this.refs.searchField.getValue());
+    if (this.refs.searchField.getValue().length < 1) {
+      this.setState({snackbarOpen: true, snackbarMsg: "검색어를 입력해주세요."});
+      return;
+    }
+    this.setState({showSpinner: true});
+    this.clearPlayList();
+    lastSearchTag = this.refs.searchField.getValue();
+    this.getPlayByTag(lastSearchTag);
+  },
+
+  getPlayByTag: function(tag, dateTime) {
+    console.log('getPlay called');
+    var query = {};
+    var now = new Date().getTime();
+    query.tag = '#'+tag;
+    query.date = dateTime ? dateTime : now;
+
+    $.ajax({
+      url: window.server.url+'/getPlayByTag',
+      dataType: 'json',
+      data : query,
+      type: 'POST',
+      cache: false,
+      success: function (recievedData) {
+        console.log(recievedData);
+        if (recievedData !== undefined) {
+          if (recievedData.Count === 0) {
+            setTimeout( function() {
+              if (this.refs.moreButton) {
+                this.refs.moreButton.showButton();
+                this.setState({showSpinner: false});
+              } else {
+                this.setState({showSpinner: false, snackbarOpen: true, snackbarMsg: "검색된 Play가 없습니다."});
+              }
+            }.bind(this), 1000);
+          } else if (recievedData.Items) {
+            searchPlayList = searchPlayList.concat(recievedData.Items);
+            setTimeout( function() {
+              if (this.refs.moreButton)
+                this.refs.moreButton.showButton();
+              this.setState({showSpinner: false, playListData: searchPlayList});
+            }.bind(this), 1000);
+          }
+        }
+      }.bind(this),
+      error: function (xhr, status, erro) {
+        if (this.refs.moreButton)
+          this.refs.moreButton.showButton();
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
+  clearPlayList: function() {
+    searchPlayList = [];
+    this.setState({playListData: searchPlayList});
+  },
+
+  _handleMoreButtonTouchTap: function() {
+    console.log("handleMoreButtonTouchTap");
+    console.log(searchPlayList);
+    console.log(searchPlayList.length);
+
+    this.refs.moreButton.showSpinner();
+    if (searchPlayList.length > 0) {
+      this.getPlayByTag(lastSearchTag, searchPlayList[searchPlayList.length-1].date.S);
+    } else {
+      this.getPlayByTag(lastSearchTag, new Date().getTime().toString());
+    }
   },
 });
 

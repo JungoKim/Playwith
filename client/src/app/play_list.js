@@ -133,11 +133,10 @@ var PlayList = React.createClass({
         );
       }.bind(this));
 
-      this.list = <List
-                      style={styles.listContainer} >
-                      {this.content}
-                      <ListDivider />
-                    </List>;
+      this.list = <List style={styles.listContainer} >
+                    {this.content}
+                    <ListDivider />
+                  </List>;
     }
 
     return (
