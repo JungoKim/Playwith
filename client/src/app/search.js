@@ -131,6 +131,7 @@ var Search = React.createClass({
       this.setState({snackbarOpen: true, snackbarMsg: "검색어를 입력해주세요."});
       return;
     }
+    this.refs.searchField.blur();
     this.setState({showSpinner: true});
     this.clearPlayList();
     lastSearchTag = this.refs.searchField.getValue();
@@ -143,6 +144,7 @@ var Search = React.createClass({
       this.setState({snackbarOpen: true, snackbarMsg: "검색어를 입력해주세요."});
       return;
     }
+    this.refs.searchField.blur();
     this.setState({showSpinner: true});
     this.clearPlayList();
     lastSearchTag = this.refs.searchField.getValue();
