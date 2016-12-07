@@ -587,11 +587,13 @@ app.post('/joinPlay', function (req, res) {
         }
       }
 
-      joinList.push(joinMember);
-      playInfoData = data;
-
       var currentTime = new Date().getTime().toString();
       var playusJoinIndex = playusIndex + '_' + userId + '_' + currentTime;
+      joinMemberWithPlayusJoinIndex = joinMember + '__' + playusJoinIndex;
+      joinList.push(joinMemberWithPlayusJoinIndex);
+
+      playInfoData = data;
+
       var playusJoinParams = {
         Item: {
           "index": {
@@ -611,6 +613,97 @@ app.post('/joinPlay', function (req, res) {
       };
 
       dynamodb.putItem(playusJoinParams, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          res.json(err);
+          return;
+        }
+        else {
+          console.log(JSON.stringify(data));
+          if (JSON.stringify(data) === "{}") {
+            var joinListEditParams = {
+              Key: {
+                "index": {
+                  "S": playusIndex
+                }
+              },
+              TableName: 'playus',
+              AttributeUpdates: {
+                "joinList": {
+                  Action: 'PUT',
+                  Value: {
+                    "SS": joinList
+                  }
+                },
+              }
+           };
+
+           dynamodb.updateItem(joinListEditParams, function (err, data) {
+             if (err)
+               console.log(err, err.stack);
+             else
+               console.log(data);
+           });
+          }
+          res.json(playInfoData);
+        }
+      });
+    }
+  });
+});
+
+app.post('/joinCancel', function (req, res) {
+  var playusIndex = req.body.playusIndex;
+  var userId = req.body.userId;
+
+  var params = {
+    Key: {
+      "index": {
+        "S": playusIndex
+      }
+    },
+    TableName: 'playus',
+    ConsistentRead: true
+  };
+
+  dynamodb.getItem(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+
+      var joinList = data.Item.joinList.SS;
+
+      var playusJoinIndex;
+
+      for(var i = 0; i < joinList.length; i++) {
+        console.log(joinList[i]);
+        if (joinList[i].split('__')[0] === userId) {
+          playusJoinIndex = joinList[i].split('__')[3];
+          joinList.splice(i, 1);
+          break;
+        }
+      }
+
+      if (!playusJoinIndex){
+        res.json('{"result" : "Error, playusJoinIndex is not found"}');
+        return;
+      }
+
+      playInfoData = data;
+
+      var playusJoinParams = {
+        Key: {
+          "index": {
+            "S": playusJoinIndex
+          }
+        },
+        TableName: 'playusJoin'
+      };
+
+      dynamodb.deleteItem(playusJoinParams, function (err, data) {
         if (err) {
           console.log(err, err.stack);
           res.json(err);
