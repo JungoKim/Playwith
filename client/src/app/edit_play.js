@@ -26,19 +26,27 @@ var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
 var MapLocation = require('./svg/map_location.js');
 
-var selectMap;
-var selectLat;
-var selectLng;
-var selectDate;
-var selectTime;
+var selectEditMap;
+var selectEditLat;
+var selectEditLng;
+var selectEditDate;
+var selectEditTime;
 
-var CreatePlay = React.createClass({
+var EditPlay = React.createClass({
 
   getInitialState: function() {
+    var selectedEventValue = selectedPlay ?
+      window.sportsEvent.indexOf(selectedPlay.playEvent.S)+1
+      : 0;
+
+    var selectedMaxMemberValue = selectedPlay ?
+      selectedPlay.maxJoin.N
+      : '1';
+
     return {
       sent : false,
-      eventValue: '1',
-      maxMemberValue: '1',
+      eventValue: selectedEventValue.toString(),
+      maxMemberValue: selectedMaxMemberValue,
       mapSelectText : window.textSet.mapSelect,
       snackbarOpen : false,
       snackbarMsg : ""
@@ -46,7 +54,7 @@ var CreatePlay = React.createClass({
   },
 
   componentWillMount: function () {
-    if (document.user === undefined) {
+    if (document.user === undefined || selectedPlay === undefined) {
       console.log("the user isn't logged yet");
       this.context.router.transitionTo('home');
       return;
@@ -62,19 +70,19 @@ var CreatePlay = React.createClass({
       this.maxMemberItems[i] = { payload: (i+1)+'', text: (i+2)+'명' };
     }
 
-    selectLat = null;
-    selectLng = null;
-    selectDate = null;
-    selectTime = null;
+    selectEditLat = null;
+    selectEditLng = null;
+    selectEditDate = null;
+    selectEditTime = null;
   },
 
   componentDidMount: function () {
 
     var mapOptions = {
-      center: new naver.maps.LatLng(window.curLat, window.curLng),
+      center: new naver.maps.LatLng(selectedPlay.locationLat.S, selectedPlay.locationLng.S),
       zoom: 7
     };
-    selectMap = new naver.maps.Map('searchInMap', mapOptions);
+    selectEditMap = new naver.maps.Map('searchInMap', mapOptions);
   },
 
   componentWillUpdate: function(nextProps, nextState) {
@@ -122,7 +130,7 @@ var CreatePlay = React.createClass({
         fontSize: 15
       },
       descriptionCardText: {
-        paddingTop: 8,
+        paddingTop: 32,
         paddingBottom: 0,
         fontSize: 15,
         marginTop: -26
@@ -211,11 +219,11 @@ var CreatePlay = React.createClass({
             </IconButton>
           </ToolbarGroup>
           <ToolbarTitle
-            text={window.textSet.createPlay}
+            text={window.textSet.modifyPlay}
             style={styles.toolbarTitle} />
           <ToolbarGroup float="right">
             <RaisedButton
-              label={window.textSet.create}
+              label={window.textSet.modify}
               secondary={true}
               style={styles.createButton}
               onTouchTap={this._handleCreateButtonTouchTap} />
@@ -244,6 +252,7 @@ var CreatePlay = React.createClass({
           </CardText>
           <CardText style={styles.descriptionCardText}>
             <TextField
+              defaultValue={selectedPlay.desc.S}
               style={styles.descriptionTextField}
               floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
               underlineFocusStyle={{borderColor: Colors.grey500}}
@@ -256,6 +265,7 @@ var CreatePlay = React.createClass({
           <CardText style={styles.locationCardText}>
             <div>
               <TextField
+                defaultValue={selectedPlay.location.S}
                 style={styles.locationTextField}
                 floatingLabelStyle={{color: "rgba(0,0,0,0.3)"}}
                 underlineFocusStyle={{borderColor: Colors.grey500}}
@@ -333,30 +343,30 @@ var CreatePlay = React.createClass({
   },
 
   _handleDatePickerChange: function(event, date) {
-    selectDate = date;
+    selectEditDate = date;
   },
 
   _handleTimePickerChange: function(event, date) {
-    selectTime = date;
+    selectEditTime = date;
   },
 
   _handleSearchInMap: function() {
     this.setState({mapSelectText : window.textSet.mapSelect});
 
-    if (selectLat || selectLng) {
+    if (selectEditLat || selectEditLng) {
       this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 다시 선택해주세요"});
     }
 
-    selectLat = null;
-    selectLng = null;
+    selectEditLat = null;
+    selectEditLng = null;
     window.scrollTo(0, 200);
   },
 
   _handleSearchInMapComplete: function() {
     this.setState({mapSelectText : window.textSet.selectComplete, snackbarOpen: true, snackbarMsg: "해당 위치로 선택되었습니다"});
-    selectLat = selectMap.getCenter()._lat;
-    selectLng = selectMap.getCenter()._lng;
-    console.log(selectLat+", "+selectLng);
+    selectEditLat = selectEditMap.getCenter()._lat;
+    selectEditLng = selectEditMap.getCenter()._lng;
+    console.log(selectEditLat+", "+selectEditLng);
     window.scrollTo(0, 0);
   },
 
@@ -371,17 +381,17 @@ var CreatePlay = React.createClass({
       return;
     }
 
-    if (!selectDate) {
+    if (!selectEditDate) {
       this.setState({snackbarOpen: true, snackbarMsg: "날짜를 입력해주세요"});
       return;
     }
 
-    if (!selectTime) {
+    if (!selectEditTime) {
       this.setState({snackbarOpen: true, snackbarMsg: "시간을 입력해주세요"});
       return;
     }
 
-    if (!selectLat || !selectLng) {
+    if (!selectEditLat || !selectEditLng) {
       this.setState({snackbarOpen: true, snackbarMsg: "지도에서 상세위치를 선택해주세요"});
       return;
     }
@@ -390,38 +400,34 @@ var CreatePlay = React.createClass({
     console.log(this.getMaxMember());
     console.log(this.refs.descriptionField.getValue());
     console.log(this.refs.locationField.getValue());
-    console.log(selectLat + ", " + selectLng);
+    console.log(selectEditLat + ", " + selectEditLng);
 
-    var date = selectDate;
-    date.setHours(selectTime.getHours());
-    date.setMinutes(selectTime.getMinutes());
+    var date = selectEditDate;
+    date.setHours(selectEditTime.getHours());
+    date.setMinutes(selectEditTime.getMinutes());
 
     console.log(date);
     console.log(date.getTime());
 
     var playInfo = {};
-    playInfo.userId = document.user.id;
-    playInfo.desc = this.refs.descriptionField.getValue().substring(0, 1000);
-    playInfo.location = this.refs.locationField.getValue().substring(0, 1000);
-    playInfo.locationLat = selectLat;
-    playInfo.locationLng = selectLng;
-    playInfo.playDate = date.getTime();
+    playInfo.playusIndex = selectedPlay.index.S;
     playInfo.playEvent = this.getEvent();
     playInfo.playEventImage = fineImagebyEvent(playInfo.playEvent);
-
-    var joinMember = document.user.id+'__'+document.user.name+'__'+document.user.profile_image;
-    playInfo.joinList = [ joinMember ];
     playInfo.maxJoin = parseInt(this.getMaxMember().replace('명', ''));
-    playInfo.profile = document.user.profile_image;
+    playInfo.desc = this.refs.descriptionField.getValue().substring(0, 1000);
+    playInfo.location = this.refs.locationField.getValue().substring(0, 1000);
+    playInfo.locationLat = selectEditLat;
+    playInfo.locationLng = selectEditLng;
+    playInfo.playDate = date.getTime();
 
-    this.createPlay(playInfo);
+    this.eidtPlay(playInfo);
   },
 
   _handleSnackBarClose: function() {
      this.setState({snackbarOpen: false});
   },
 
-  createPlay: function(playInfo) {
+  eidtPlay: function(playInfo) {
     console.log('createPlay called');
 
     if (this.state.sent === true) {
@@ -430,7 +436,7 @@ var CreatePlay = React.createClass({
     }
 
     this.setState({sent: true});
-    var url = window.server.url+'/createPlay';
+    var url = window.server.url+'/editPlay';
 
     console.log(playInfo);
 
@@ -465,8 +471,8 @@ var CreatePlay = React.createClass({
 });
 
 
-CreatePlay.contextTypes = {
+EditPlay.contextTypes = {
   router: React.PropTypes.func
 };
 
-module.exports = CreatePlay;
+module.exports = EditPlay;

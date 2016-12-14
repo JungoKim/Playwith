@@ -13,6 +13,7 @@ var CreatePlay = require('./create_play.js');
 var PlayInfo = require('./play_info.js');
 var MyPlay = require('./my_play.js');
 var JoinPlay = require('./join_play.js');
+var EditPlay = require('./edit_play.js');
 
 var AppRoutes = (
   <Route name="root" path="/" handler={Master}>
@@ -24,6 +25,7 @@ var AppRoutes = (
     <Route name="play_info" handler={PlayInfo} />
     <Route name="my_play" handler={MyPlay} />
     <Route name="join_play" handler={JoinPlay} />
+    <Route name="edit_play" handler={EditPlay} />
     <DefaultRoute handler={Home} />
   </Route>
 );

@@ -18,6 +18,8 @@ var { Card,
 
 var { Colors, Spacing, Typography } = mui.Styles;
 
+var Tooltip = require("react-tooltip");
+
 var Back = require('./svg/back.js');
 var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
@@ -197,12 +199,16 @@ var PlayInfo = React.createClass({
 
     var joinMembers = this.state.playInfoData.joinList.SS.map(function (joinMember) {
       var profile = joinMember.split('__')[2];
-      console.log(profile);
+      var name = joinMember.split('__')[1];
       return (
-        <Avatar
-          src={profile}
-          style={styles.joinMemberAvatar}>
-        </Avatar>
+        <div>
+          <Avatar
+            src={profile}
+            style={styles.joinMemberAvatar}
+            data-tip data-for={joinMember} >
+          </Avatar>
+          <Tooltip id={joinMember} effect="solid" delayShow={500}>{name}</Tooltip>
+        </div>
       );
     });
 
@@ -290,6 +296,7 @@ var PlayInfo = React.createClass({
 
   _handleEditButtonTouchTap: function(e) {
     console.log('_handleEditButtonTouchTap');
+    this.context.router.transitionTo('edit_play');
   },
 
   checkAlreadyJoin: function(userId) {
