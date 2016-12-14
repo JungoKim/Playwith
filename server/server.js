@@ -743,6 +743,87 @@ app.post('/joinCancel', function (req, res) {
   });
 });
 
+app.post('/editPlay', function (req, res) {
+  var playusIndex = req.body.playusIndex;
+  var playEvent = req.body.playEvent;
+  var playEventImage = req.body.playEventImage;
+  var maxJoin = req.body.maxJoin;
+  var desc = req.body.desc;
+  var location = req.body.location;
+  var locationLat = req.body.locationLat;
+  var locationLng = req.body.locationLng;
+  var playDate = req.body.playDate;
+
+  var params = {
+    Key: {
+      "index": {
+        "S": playusIndex
+      }
+    },
+    TableName: 'playus',
+    AttributeUpdates: {
+      "playEvent": {
+        Action: 'PUT',
+        Value: {
+          "S": playEvent
+        }
+      },
+      "playEventImage": {
+        Action: 'PUT',
+        Value: {
+          "S": playEventImage
+        }
+      },
+      "maxJoin": {
+        Action: 'PUT',
+        Value: {
+          "N": maxJoin
+        }
+      },
+      "desc": {
+        Action: 'PUT',
+        Value: {
+          "S": desc
+        }
+      },
+      "location": {
+        Action: 'PUT',
+        Value: {
+          "S": location
+        }
+      },
+      "locationLat": {
+        Action: 'PUT',
+        Value: {
+          "S": locationLat
+        }
+      },
+      "locationLng": {
+        Action: 'PUT',
+        Value: {
+          "S": locationLng
+        }
+      },
+      "playDate": {
+        Action: 'PUT',
+        Value: {
+          "S": playDate
+        }
+      },
+    }
+  };
+
+  dynamodb.updateItem(params, function (err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      res.json(err);
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+});
+
 var server = app.listen(4000, function () {
   var host = server.address().address;
   var port = server.address().port;
