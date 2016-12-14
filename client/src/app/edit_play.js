@@ -40,13 +40,13 @@ var EditPlay = React.createClass({
       : 0;
 
     var selectedMaxMemberValue = selectedPlay ?
-      selectedPlay.maxJoin.N
-      : '1';
+      selectedPlay.maxJoin.N-1
+      : 1;
 
     return {
       sent : false,
       eventValue: selectedEventValue.toString(),
-      maxMemberValue: selectedMaxMemberValue,
+      maxMemberValue: selectedMaxMemberValue.toString(),
       mapSelectText : window.textSet.mapSelect,
       snackbarOpen : false,
       snackbarMsg : ""
@@ -447,7 +447,7 @@ var EditPlay = React.createClass({
       data: playInfo,
       success: function (res) {
         if (res.message === undefined) {
-          this.setState({snackbarOpen: true, snackbarMsg: "새로운 Play를 생성하였습니다"});
+          this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 완료하였습니다"});
           setTimeout(
             function(){
               window.playListState = "UpdateNeeded";
@@ -459,11 +459,11 @@ var EditPlay = React.createClass({
           );
         }
         else {
-          this.setState({snackbarOpen: true, snackbarMsg: "Play 생성을 실패하였습니다"});
+          this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 실패하였습니다"});
         }
       }.bind(this),
       error: function (xhr, status, err) {
-        this.setState({snackbarOpen: true, snackbarMsg: "Play 생성을 실패하였습니다"});
+        this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 실패하였습니다"});
         this.setState({sent: false});
       }.bind(this),
     });

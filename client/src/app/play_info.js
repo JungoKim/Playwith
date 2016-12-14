@@ -198,6 +198,9 @@ var PlayInfo = React.createClass({
     }.bind(this)();
 
     var joinMembers = this.state.playInfoData.joinList.SS.map(function (joinMember) {
+      if (!joinMember)
+        return;
+
       var profile = joinMember.split('__')[2];
       var name = joinMember.split('__')[1];
       return (
@@ -292,6 +295,10 @@ var PlayInfo = React.createClass({
 
   _handleJoinCancelButtonTouchTap: function(e) {
     console.log('_handleJoinCancelButtonTouchTap');
+    var joinInfo = {};
+    joinInfo.playusIndex = this.state.playInfoData.index.S;
+    joinInfo.userId = document.user.id;
+    this.joinCancel(joinInfo);
   },
 
   _handleEditButtonTouchTap: function(e) {
@@ -301,7 +308,10 @@ var PlayInfo = React.createClass({
 
   checkAlreadyJoin: function(userId) {
     var result = this.state.playInfoData.joinList.SS.find(function(user){
-      return user.split('__')[0] === userId;
+      if (user)
+        return user.split('__')[0] === userId;
+      else
+        return false;
     });
     if (result === undefined)
       return false;
@@ -316,6 +326,7 @@ var PlayInfo = React.createClass({
   _loginClose: function(joinInfo) {
     this.setState({dialOpen: false});
   },
+
   joinPlay: function(joinInfo) {
     if (this.state.joinPlaySent === true) {
       console.log('cancel duplicate call');
@@ -351,6 +362,43 @@ var PlayInfo = React.createClass({
       error: function (xhr, status, err) {
         this.setState({snackbarOpen: true, snackbarMsg: "참여하기 실패..."});
         this.setState({joinPlaySent: false});
+      }.bind(this),
+    });
+  },
+
+  joinCancel: function(joinInfo) {
+    if (this.state.joinCancelSent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.setState({joinCancelSent: true});
+    var url = window.server.url+'/joinCancel';
+
+    console.log(joinInfo);
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: joinInfo,
+      success: function (recievedData) {
+        console.log(recievedData);
+        if (recievedData !== undefined) {
+          if (recievedData.Item) {
+            this.setState({snackbarOpen: true, snackbarMsg: "참여하기가 취소되었습니다.", playInfoData: recievedData.Item});
+            window.playListState = "UpdateNeeded";
+            window.joinPlayListState = "UpdateNeeded";
+          } else {
+            if (recievedData === '{"result" : "Error, playusJoinIndex is not found"}')
+              this.setState({snackbarOpen: true, snackbarMsg: "참여취소 실패..."});
+          }
+        }
+        this.setState({joinCancelSent: false});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({snackbarOpen: true, snackbarMsg: "참여취소 실패..."});
+        this.setState({joinCancelSent: false});
       }.bind(this),
     });
   },
