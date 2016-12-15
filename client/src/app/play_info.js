@@ -6,6 +6,7 @@ var { Card,
   CardHeader,
   CardText,
   CardActions,
+  Divider,
   Avatar,
   FlatButton,
   IconButton,
@@ -24,6 +25,7 @@ var Back = require('./svg/back.js');
 var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
 var LoginSel = require('./login_select.js');
+var Chat = require('./chat.js');
 
 var PlayInfo = React.createClass({
 
@@ -256,6 +258,8 @@ var PlayInfo = React.createClass({
           </div>
           <CardText style={styles.lastCardText}>
           </CardText>
+          <Divider />
+          <Chat />
         </Card>
         <LoginSel
           openstate={this.state.dialOpen}

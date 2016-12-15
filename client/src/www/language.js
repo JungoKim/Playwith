@@ -34,6 +34,7 @@ function getTextSetByLanguege(language) {
       text.refresh = "새로고침";
       text.modifyPlay = "Play 수정하기";
       text.modify = "수정";
+      text.comment = "댓글달기";
       break;
     case "en" :
       text.login = "Sign in";
