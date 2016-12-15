@@ -23,6 +23,7 @@ var ChatList = React.createClass({
         marginRight: 'auto',
         width: "100%",
         maxWidth : 650,
+                backgroundColor : Colors.grey100,
       },
       listContainer:  {
         paddingTop: 0,
@@ -30,20 +31,21 @@ var ChatList = React.createClass({
         marginTop: 2
       },
       leftAvataIcon: {
-        width: 48,
-        height: 48,
+        width: 38,
+        height: 38,
       },
       rightDiv: {
         padding : '0px',
         width : 48,
-        height : 48,
-        top: 3,
+        height : 20,
+        top: 7,
         right: 0,
-        margin : "12px 0px 0px 0px"
+        margin : "12px 0px 0px 0px",
+        fontSize: 12
       },
       commentContainer: {
         color: Colors.lightBlack,
-        fontSize: 14
+        fontSize: 12
       },
     };
 
@@ -67,6 +69,7 @@ var ChatList = React.createClass({
           <div>
             <ListDivider />
             <ListItem
+              disabled={true}
               style={{paddingRight: 16}}
               leftAvatar={<Avatar src={profile} style={styles.leftAvataIcon}></Avatar>}
               rightIcon={
@@ -75,7 +78,7 @@ var ChatList = React.createClass({
                 </div>
               }
               primaryText={
-                 <span>
+                 <span style={{fontSize: 14}}>
                    {name}
                    <br/>
                    <span style={styles.commentContainer}>{comment.comment.S}</span>

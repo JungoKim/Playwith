@@ -26,21 +26,21 @@ chatListDataTest = [
   {
     "index" : { "S": "1" },
     "playusIndex" : { "S": "1" },
-    "date" : { "S": "1" },
+    "date" : { "S": "1일 전" },
     "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
     "comment" : { "S": "test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1" },
   },
   {
     "index" : { "S": "2" },
     "playusIndex" : { "S": "1" },
-    "date" : { "S": "2" },
+    "date" : { "S": "59초 전" },
     "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
     "comment" : { "S": "test 2" },
   },
   {
     "index" : { "S": "3" },
     "playusIndex" : { "S": "1" },
-    "date" : { "S": "3" },
+    "date" : { "S": "12달 전" },
     "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
     "comment" : { "S": "test 3" },
   },
@@ -90,7 +90,8 @@ var Chat = React.createClass({
     };
 
     var moreButton = this.state.chatListData.length > 0 ?
-      <MoreButton
+      <FlatButton
+        style={{width: '100%'}}
         ref='moreButton'
         label={window.textSet.more}
         onTouchTap={this._handleMoreButtonTouchTap} />

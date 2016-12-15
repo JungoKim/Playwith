@@ -258,7 +258,7 @@ var PlayInfo = React.createClass({
           </div>
           <CardText style={styles.lastCardText}>
           </CardText>
-          <Divider />
+          <Divider style={{height: 2}} />
           <Chat />
         </Card>
         <LoginSel
