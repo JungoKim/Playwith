@@ -824,6 +824,96 @@ app.post('/editPlay', function (req, res) {
   });
 });
 
+app.post('/addComment', function (req, res) {
+  var playusIndex = req.body.playusIndex;
+  var user = req.body.user;
+  var userId = req.body.userId;
+  var comment = req.body.comment;
+  var currentTime = new Date().getTime().toString();
+
+  var params = {
+    Item: {
+      "index": {
+        "S": playusIndex + '_' + userId + '_' + currentTime
+      },
+      "date": {
+        "S": currentTime
+      },
+      "playusIndex": {
+        "S": playusIndex
+      },
+      "user": {
+        "S": user
+      },
+      "comment": {
+        "S": comment
+      }
+    },
+    TableName: 'playusChat'
+  };
+
+  dynamodb.putItem(params, function (err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      res.json(err);
+      return;
+    }
+    else {
+      console.log(JSON.stringify(data));
+      if (JSON.stringify(data) === "{}") {
+        res.json('{"result" : "New comment created"}');
+      }
+    }
+  });
+});
+
+app.post('/getComment', function (req, res) {
+  var now =  new Date().getTime();
+  var playusIndex = req.body.playusIndex;
+  var dateStart = req.body.dateStart;
+  var dateEnd = req.body.dateEnd;
+
+  var params = {
+    TableName: 'playusChat',
+    IndexName: 'playusIndex-date-index',
+    KeyConditions: { // indexed attributes to query
+                     // must include the hash key value of the table or index
+      playusIndex: {
+        ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+        AttributeValueList: [
+          {
+            S: playusIndex,
+          }
+        ],
+      },
+      date: {
+        ComparisonOperator: 'BETWEEN',
+        AttributeValueList: [
+          {
+            S: dateStart,
+          },
+          {
+            S: dateEnd,
+          }
+        ],
+      },
+    },
+    ScanIndexForward: false,
+    ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+  };
+
+  dynamodb.query(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+      res.json(data);
+    }
+  });
+});
+
 var server = app.listen(4000, function () {
   var host = server.address().address;
   var port = server.address().port;
