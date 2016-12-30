@@ -21,30 +21,9 @@ var { Colors, Spacing, Typography } = mui.Styles;
 var Enter = require('./svg/enter.js');
 var MoreButton = require('./more-button.js');
 var ChatList = require('./chat_list.js');
+var LoginSel = require('./login_select.js');
 
-chatListDataTest = [
-  {
-    "index" : { "S": "1" },
-    "playusIndex" : { "S": "1" },
-    "date" : { "S": "1일 전" },
-    "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
-    "comment" : { "S": "test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1test 1" },
-  },
-  {
-    "index" : { "S": "2" },
-    "playusIndex" : { "S": "1" },
-    "date" : { "S": "59초 전" },
-    "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
-    "comment" : { "S": "test 2" },
-  },
-  {
-    "index" : { "S": "3" },
-    "playusIndex" : { "S": "1" },
-    "date" : { "S": "12달 전" },
-    "user" : { "S": "1156050951181991__김정오__https://graph.facebook.com/1156050951181991/picture?type=small" },
-    "comment" : { "S": "test 3" },
-  },
-];
+var chatUpdater;
 
 var Chat = React.createClass({
   getInitialState: function() {
@@ -52,15 +31,38 @@ var Chat = React.createClass({
       chatListData:[],
       snackbarOpen : false,
       snackbarMsg : "",
-      showSpinner : false
+      dialOpen : false,
     };
   },
   componentWillMount: function () {
-    console.log('Search componentWillMount called');
-    this.setState({chatListData: chatListDataTest});
+    console.log('Chat componentWillMount called');
+    var origin = new Date(0).getTime();
+    var now = new Date().getTime();
+    this.getComment(origin, now);
+
+    this.addComentSent = false;
+    this.getComentSent = false;
+  },
+
+  componentWillUnmount: function () {
+    if (chatUpdater)
+      clearInterval(chatUpdater);
   },
 
   componentDidMount: function () {
+    if (chatUpdater)
+      clearInterval(chatUpdater);
+
+    chatUpdater = setInterval( function(){
+      if (this.state.getComentSent === true)
+        return;
+      var origin = new Date(0).getTime();
+      if (this.state.chatListData.length > 0) {
+        origin = parseFloat(this.state.chatListData[0].date.S) + 1;
+      }
+      var now = new Date().getTime();
+      this.getComment(origin, now);
+    }.bind(this), 10000);
   },
 
   render: function() {
@@ -89,22 +91,6 @@ var Chat = React.createClass({
       },
     };
 
-    var moreButton = this.state.chatListData.length > 0 ?
-      <FlatButton
-        style={{width: '100%'}}
-        ref='moreButton'
-        label={window.textSet.more}
-        onTouchTap={this._handleMoreButtonTouchTap} />
-      : null;
-
-    var spinner = this.state.showSpinner === true ?
-      <CircularProgress
-        style={styles.spinner}
-        mode="indeterminate"
-        color={Colors.cyan400}
-        size={0.5} />
-      : null;
-
     return (
       <div style={styles.root}>
         <div>
@@ -127,9 +113,11 @@ var Chat = React.createClass({
         <div style={styles.chatListContainer}>
           <ChatList
             data={this.state.chatListData} />
-          {moreButton}
-          {spinner}
         </div>
+        <LoginSel
+          openstate={this.state.dialOpen}
+          close={this._loginClose}>
+        </LoginSel>
         <Snackbar
           ref="snackbar"
           open={this.state.snackbarOpen}
@@ -138,6 +126,14 @@ var Chat = React.createClass({
           autoHideDuration={1500} />
       </div>
     );
+  },
+
+  _loginOpen: function() {
+    this.setState({dialOpen: true});
+  },
+
+  _loginClose: function(joinInfo) {
+    this.setState({dialOpen: false});
   },
 
   _handleSnackBarClose: function() {
@@ -149,13 +145,117 @@ var Chat = React.createClass({
 
   _handleEnterKeyDown: function(e) {
     console.log("chat text : " + this.refs.chatField.getValue());
+    if (document.user !== undefined) {
+      console.log('_handleEnterKeyDown');
+      var commentInfo = {};
+      commentInfo.playusIndex = selectedPlay.index.S;
+      commentInfo.userId = document.user.id;
+      commentInfo.user = document.user.id+'__'+document.user.name+'__'+document.user.profile_image;
+      commentInfo.comment = this.refs.chatField.getValue();
+      this.addComment(commentInfo);
+    }
+    else {
+      this._loginOpen();
+    }
   },
 
   _handleSendButtonTouchTap: function(e) {
-    console.log("chat text : " + this.refs.chatField.getValue());
+    if (!this.refs.chatField.getValue()) {
+      this.setState({snackbarOpen: true, snackbarMsg: "댓글을 입력해주세요~!"});
+      return;
+    }
+
+    if (document.user !== undefined) {
+      console.log('_handleEnterKeyDown');
+      var commentInfo = {};
+      commentInfo.playusIndex = selectedPlay.index.S;
+      commentInfo.userId = document.user.id;
+      commentInfo.user = document.user.id+'__'+document.user.name+'__'+document.user.profile_image;
+      commentInfo.comment = this.refs.chatField.getValue();
+      this.addComment(commentInfo);
+    }
+    else {
+      this._loginOpen();
+    }
   },
 
   _handleMoreButtonTouchTap: function() {
+  },
+
+  addComment: function(commentInfo) {
+    console.log('addComment called');
+
+    if (this.addComentSent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.addComentSent = true;
+    var url = window.server.url+'/addComment';
+
+    console.log(commentInfo);
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: commentInfo,
+      success: function (res) {
+        console.log(res);
+        if (res == '{"result" : "New comment created"}') {
+          var origin = new Date(0).getTime();
+          if (this.state.chatListData.length > 0) {
+            origin = parseFloat(this.state.chatListData[0].date.S) + 1;
+          }
+          var now = new Date().getTime();
+          this.getComment(origin, now);
+
+          this.refs.chatField.clearValue();
+        }
+        this.addComentSent = false;
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({snackbarOpen: true, snackbarMsg: "댓글 생성을 실패하였습니다"});
+        this.addComentSent = true;
+      }.bind(this),
+    });
+  },
+
+  getComment: function(dateStart, dateEnd) {
+    console.log('getComment called');
+
+    if (this.getComentSent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.getComentSent = true;
+    var query = {};
+    var now = new Date().getTime();
+    query.playusIndex = selectedPlay.index.S;
+    query.dateStart = dateStart;
+    query.dateEnd = dateEnd;
+
+    $.ajax({
+      url: window.server.url+'/getComment',
+      dataType: 'json',
+      data : query,
+      type: 'POST',
+      cache: false,
+      success: function (recievedData) {
+        console.log(recievedData.Items);
+        if (recievedData.Items !== undefined) {
+          chatList = recievedData.Items;
+          chatList = chatList.concat(this.state.chatListData);
+          this.setState({chatListData: chatList});
+        }
+        this.getComentSent = false;
+      }.bind(this),
+      error: function (xhr, status, erro) {
+        console.log(this.props.url, status, err.toString());
+        this.getComentSent = false;
+      }.bind(this)
+    });
   },
 });
 

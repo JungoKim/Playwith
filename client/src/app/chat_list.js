@@ -63,14 +63,14 @@ var ChatList = React.createClass({
 
         var name = comment.user.S.split('__')[1];
         var profile = comment.user.S.split('__')[2];
-        var date = comment.date.S;
+        var date = this.readableDate(comment.date.S);
 
         return (
           <div>
             <ListDivider />
             <ListItem
               disabled={true}
-              style={{paddingRight: 16}}
+              style={{paddingRight: 16, paddingBottom: 10}}
               leftAvatar={<Avatar src={profile} style={styles.leftAvataIcon}></Avatar>}
               rightIcon={
                 <div style={styles.rightDiv}>
@@ -99,6 +99,36 @@ var ChatList = React.createClass({
         {this.list}
       </div>
     );
+  },
+  readableDate: function(datetime) {
+    var currentTime = new Date().getTime();
+    var sec =  (currentTime - datetime) / 1000;
+
+    if(sec < 60)
+      return sec.toFixed(0) + ' 초';
+
+    var min = sec / 60;
+    if(min < 60)
+      return min.toFixed(0) + ' 분';
+
+    var hour = min / 60;
+    if(hour < 24)
+      return hour.toFixed(0) + ' 시간';
+
+    var day = hour / 24;
+    if(day < 7)
+      return day.toFixed(0) + ' 일';
+
+    var week = day / 7;
+    if(week < 5)
+      return week.toFixed(0) + ' 주';
+
+    var month = day / 30;
+    if(month < 12)
+      return month.toFixed(0) + ' 월';
+
+    var year = day / 365;
+    return year.toFixed(0) + ' 년';
   },
 });
 
