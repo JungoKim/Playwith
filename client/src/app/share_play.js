@@ -27,7 +27,7 @@ var SharePlay = React.createClass({
   componentWillMount: function () {
     console.log('PlayByIndex componentWillMount called');
     this.playusIndex = this.props.playusIndex;
-    this.shareURL= window.client.url+"/#/play_by_index.html?index="+this.playusIndex;
+    this.shareURL= window.client.url+"/#/play_by_index?index="+this.playusIndex;
     this.shareContent = "종목 : " + this.props.event + ", \n"
                         +  this.props.desc + ", \n"
                         + "장소 : " + this.props.location+ ", \n"
