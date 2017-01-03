@@ -26,6 +26,7 @@ var LocationIcon = require('./svg/location_icon.js');
 var TimeIcon = require('./svg/time_icon.js');
 var LoginSel = require('./login_select.js');
 var Chat = require('./chat.js');
+var SharePlay = require('./share_play.js');
 
 var PlayInfo = React.createClass({
 
@@ -240,7 +241,14 @@ var PlayInfo = React.createClass({
                {this.state.playInfoData.playEvent.S}
               </div>
             }
-            avatar={<Avatar src={this.state.playInfoData.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}/>
+            avatar={<Avatar src={this.state.playInfoData.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}>
+            <SharePlay
+              playusIndex={this.state.playInfoData.index.S}
+              event={this.state.playInfoData.playEvent.S}
+              desc={this.state.playInfoData.desc.S}
+              location={this.state.playInfoData.location.S}
+              date={dispDate} />
+          </CardHeader>
           <CardText style={styles.cardText}>
             {this.state.playInfoData.desc.S}
           </CardText>
