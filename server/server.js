@@ -50,6 +50,31 @@ app.get('/scan', function (req, res) {
   });
 });
 
+app.post('/getPlayByIndex', function (req, res) {
+  var playusIndex = req.body.playusIndex;
+
+  var params = {
+    Key: {
+      "index": {
+        "S": playusIndex
+      }
+    },
+    TableName: 'playus',
+    ConsistentRead: true
+  };
+
+  dynamodb.getItem(params, function(err, data) {
+    if (err){
+      console.log(err); // an error occurred
+      res.json(err);
+    }
+    else {
+      console.log(data); // successful response
+      res.json(data);
+    }
+  });
+});
+
 // createPlay
 app.post('/createPlay', function (req, res) {
   console.log("body: " + JSON.stringify(req.body));
