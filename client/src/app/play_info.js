@@ -200,7 +200,8 @@ var PlayInfo = React.createClass({
       }
     }.bind(this)();
 
-    var joinMembers = this.state.playInfoData.joinList.SS.map(function (joinMember) {
+    var joinMembers = this.state.playInfoData.joinList ?
+    this.state.playInfoData.joinList.SS.map(function (joinMember) {
       if (!joinMember)
         return;
 
@@ -216,10 +217,11 @@ var PlayInfo = React.createClass({
           <Tooltip id={joinMember} effect="solid" delayShow={500}>{name}</Tooltip>
         </div>
       );
-    });
+    }) : null;
 
     var distKM = window.calcDistKM(this.state.playInfoData.locationLat.S, this.state.playInfoData.locationLng.S) + "km";
     var dispDate = window.displayDate(this.state.playInfoData.playDate.S);
+    var joinMemberNumber = this.state.playInfoData.joinList ? this.state.playInfoData.joinList.SS.length : 0;
 
     return (
       <div style={styles.root}>
@@ -261,7 +263,7 @@ var PlayInfo = React.createClass({
           <div id='locationInMap' style={styles.map}>
           </div>
           <div style={styles.joinMemberContainer}>
-            <div style={styles.joinStatus}>{parseInt(this.state.playInfoData.maxJoin.N) - this.state.playInfoData.joinList.SS.length}{window.textSet.memberLeft}</div>
+            <div style={styles.joinStatus}>{parseInt(this.state.playInfoData.maxJoin.N) - joinMemberNumber}{window.textSet.memberLeft}</div>
             {joinMembers}
           </div>
           <CardText style={styles.lastCardText}>
@@ -319,12 +321,17 @@ var PlayInfo = React.createClass({
   },
 
   checkAlreadyJoin: function(userId) {
+    if (!this.state.playInfoData.joinList) {
+      return false;
+    }
+
     var result = this.state.playInfoData.joinList.SS.find(function(user){
       if (user)
         return user.split('__')[0] === userId;
       else
         return false;
     });
+
     if (result === undefined)
       return false;
     else

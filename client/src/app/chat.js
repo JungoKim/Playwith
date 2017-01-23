@@ -62,7 +62,7 @@ var Chat = React.createClass({
       }
       var now = new Date().getTime();
       this.getComment(origin, now);
-    }.bind(this), 10000);
+    }.bind(this), 30000);
   },
 
   render: function() {

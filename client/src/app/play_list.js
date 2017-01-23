@@ -101,6 +101,7 @@ var PlayList = React.createClass({
 
         var distKM = window.calcDistKM(play.locationLat.S, play.locationLng.S) + "km";
         var dispDate = window.displayDate(play.playDate.S);
+        var joinMemberNumber = play.joinList? play.joinList.SS.length : 0;
         return (
           <div>
             <ListDivider />
@@ -110,7 +111,7 @@ var PlayList = React.createClass({
               rightIcon={
                 <div style={styles.rightDiv}>
                   <Avatar src={play.profile.S} style={styles.rightSportsIcon}></Avatar>
-                  <div style={styles.rightJoinStatus}>{play.joinList.SS.length} / {play.maxJoin.N}</div>
+                  <div style={styles.rightJoinStatus}>{joinMemberNumber} / {play.maxJoin.N}</div>
                 </div>
               }
               primaryText={
