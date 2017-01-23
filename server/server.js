@@ -132,6 +132,11 @@ app.post('/createPlay', function (req, res) {
     TableName: 'playus'
   };
 
+  // Check administrator
+  if (userId === "103264010188543") {
+   delete params.Item.joinList;
+  }
+
   dynamodb.putItem(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
@@ -141,6 +146,12 @@ app.post('/createPlay', function (req, res) {
     else {
       console.log(JSON.stringify(data));
       if (JSON.stringify(data) === "{}") {
+        // Check administrator
+        if (userId === "103264010188543") {
+          res.json('{"result" : "New play created"}');
+          return;
+        }
+
         var playusJoinIndex = playusIndex + '_' + userId + '_' + currentTime;
         var playusJoinParams = {
           Item: {
@@ -598,7 +609,7 @@ app.post('/joinPlay', function (req, res) {
     else {
       console.log(data); // successful response
 
-      var joinList = data.Item.joinList.SS;
+      var joinList = data.Item.joinList ? data.Item.joinList.SS : [];
 
       if (parseInt(data.Item.maxJoin.N) <= joinList.length){
         res.json('{"result" : "Error, Join list was full"}');
@@ -618,6 +629,7 @@ app.post('/joinPlay', function (req, res) {
       joinList.push(joinMemberWithPlayusJoinIndex);
 
       playInfoData = data;
+      playInfoData.Item.joinList = { "SS" : joinList };
 
       var playusJoinParams = {
         Item: {
@@ -753,6 +765,10 @@ app.post('/joinCancel', function (req, res) {
                 },
               }
            };
+
+           if (joinList.length < 1) {
+             joinListEditParams.AttributeUpdates.joinList = { Action: 'DELETE' }
+           }
 
            dynamodb.updateItem(joinListEditParams, function (err, data) {
              if (err)
