@@ -14,6 +14,7 @@ var searchMap;
 var searchMapPlayList = [];
 searchMapCenterLat = 0;
 searchMapCenterLng = 0;
+searchMapZoom = 6;
 
 var Map = React.createClass({
   getInitialState: function() {
@@ -86,7 +87,7 @@ var Map = React.createClass({
   createMap: function() {
     var mapOptions = {
       center: new naver.maps.LatLng(searchMapCenterLat, searchMapCenterLng),
-       zoom: 7
+       zoom: searchMapZoom
     };
     searchMap = new naver.maps.Map('map', mapOptions);
 
@@ -94,6 +95,11 @@ var Map = React.createClass({
       console.log('bounds_changed');
       searchMapCenterLat = searchMap.getCenter()._lat;
       searchMapCenterLng = searchMap.getCenter()._lng;
+    });
+
+    naver.maps.Event.addListener(searchMap, 'zoom_changed', function(zoom) {
+      console.log('zoom_changed');
+      searchMapZoom = zoom;
     });
   },
   _handleSearchButtonTouchTap: function() {
