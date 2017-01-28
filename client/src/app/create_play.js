@@ -58,8 +58,8 @@ var CreatePlay = React.createClass({
     }
 
     this.maxMemberItems = [];
-    for (var i = 0; i < 49; i++) {
-      this.maxMemberItems[i] = { payload: (i+1)+'', text: (i+2)+'명' };
+    for (var i = 0; i < 50; i++) {
+      this.maxMemberItems[i] = { payload: (i+1)+'', text: (i+1)+'명' };
     }
 
     selectLat = null;
