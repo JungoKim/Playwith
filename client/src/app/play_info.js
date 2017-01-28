@@ -162,6 +162,12 @@ var PlayInfo = React.createClass({
         marginBottom : 10,
         height: 150
       },
+      descContainer: {
+        color: Colors.black,
+        pointerEvents: 'none',
+        fontSize: 14,
+        width: '100%'
+      },
     };
 
     var button = function () {
@@ -252,7 +258,13 @@ var PlayInfo = React.createClass({
               date={dispDate} />
           </CardHeader>
           <CardText style={styles.cardText}>
-            {this.state.playInfoData.desc.S}
+            <TextField
+              defaultValue={this.state.playInfoData.desc.S}
+              style={styles.descContainer}
+              underlineShow={false}
+              rows={1}
+              rowsMax={100}
+              multiLine={true} />
           </CardText>
           <CardText style={styles.cardText}>
             <TimeIcon style={styles.time} /> {dispDate}

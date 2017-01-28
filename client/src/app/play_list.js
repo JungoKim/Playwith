@@ -10,7 +10,8 @@ var {
   List,
   ListItem,
   ListDivider,
-  CircularProgress
+  CircularProgress,
+  TextField
 } = require('material-ui');
 
 var Spinner = require('./spinner.js');
@@ -71,7 +72,9 @@ var PlayList = React.createClass({
       },
       descContainer: {
         color: Colors.lightBlack,
-        fontSize: 14
+        pointerEvents: 'none',
+        fontSize: 13,
+        width: '100%'
       },
       locationContainer: {
         color: Colors.darkBlack,
@@ -118,7 +121,13 @@ var PlayList = React.createClass({
                  <span>
                    {play.playEvent.S}
                    <br/>
-                   <span style={styles.descContainer}>{play.desc.S}</span>
+                   <TextField
+                     defaultValue={play.desc.S}
+                     style={styles.descContainer}
+                     underlineShow={false}
+                     rows={1}
+                     rowsMax={100}
+                     multiLine={true} />
                    <br/>
                    <span style={styles.playDateContainer}>
                      <TimeIcon style={styles.time} /> {dispDate}
