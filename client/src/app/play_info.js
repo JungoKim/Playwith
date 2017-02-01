@@ -94,6 +94,10 @@ var PlayInfo = React.createClass({
       joinButton: {
         margin:'6px 0px 0px 0px',
       },
+      joinClosedButton: {
+        margin:'6px 0px 0px 0px',
+        pointerEvents: 'none',
+      },
       card: {
         margin: 5
       },
@@ -165,12 +169,22 @@ var PlayInfo = React.createClass({
       descContainer: {
         color: Colors.black,
         pointerEvents: 'none',
-        fontSize: 14,
+        fontSize: 15,
         width: '100%'
       },
     };
 
     var button = function () {
+      if (this.state.playInfoData.state.S === 'closed'
+       && document.user.id !== this.state.playInfoData.userId.S) {
+        return (
+          <RaisedButton
+            label={window.textSet.closed}
+            primary={true}
+            style={styles.joinClosedButton} />
+        );
+      }
+
       if (document.user === undefined) {
         return (
           <RaisedButton

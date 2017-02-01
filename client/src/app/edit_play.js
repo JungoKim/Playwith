@@ -187,7 +187,7 @@ var EditPlay = React.createClass({
         width: 'calc(100% - 32px)',
         marginRight: 16,
         marginLeft: 16,
-        marginBottom : 32,
+        marginBottom : 16,
         height: 400
       },
       searchButton : {
@@ -202,7 +202,33 @@ var EditPlay = React.createClass({
         left: 'calc(50% - 24px)',
         zIndex: 2,
       },
+      joinClosedButton: {
+        width: 'calc(100% - 20px)',
+        marginLeft: 10,
+        marginRight: 10,
+        marginBottom : 10,
+      }
     };
+
+    var button = function () {
+      if (selectedPlay.state.S === 'closed') {
+        return (
+          <RaisedButton
+            label={window.textSet.closedCancel}
+            primary={true}
+            style={styles.joinClosedButton}
+            onTouchTap={this._handleClosedCancelButtonTouchTap} />
+        );
+      } else {
+        return (
+          <RaisedButton
+            label={window.textSet.doClose}
+            primary={true}
+            style={styles.joinClosedButton}
+            onTouchTap={this._handleDoCloseButtonTouchTap} />
+        );
+      }
+    }.bind(this)();
 
     return (
       <div style={styles.root}>
@@ -310,6 +336,7 @@ var EditPlay = React.createClass({
               style={styles.mapMarker}
               src="./img/map_marker.png" />
           </div>
+          {button}
         </Card>
         <Snackbar
           ref="snackbar"
@@ -467,6 +494,10 @@ var EditPlay = React.createClass({
         this.setState({sent: false});
       }.bind(this),
     });
+  },
+  _handleClosedCancelButtonTouchTap : function(playInfo) {
+  },
+  _handleDoCloseButtonTouchTap : function(playInfo) {
   },
 });
 

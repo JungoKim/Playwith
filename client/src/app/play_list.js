@@ -78,13 +78,13 @@ var PlayList = React.createClass({
       },
       locationContainer: {
         color: Colors.darkBlack,
-        fontSize: 15,
+        fontSize: 14,
         position: 'relative',
         top: 10
       },
       playDateContainer: {
         color: Colors.darkBlack,
-        fontSize: 15,
+        fontSize: 14,
         position: 'relative',
         top: 6
       },
