@@ -10,10 +10,12 @@ var {
   List,
   ListItem,
   ListDivider,
-  CircularProgress
+  CircularProgress,
+  IconButton
 } = require('material-ui');
 
 var Spinner = require('./spinner.js');
+var Delete = require('./svg/delete.js');
 
 var ChatList = React.createClass({
   render: function() {
@@ -40,13 +42,21 @@ var ChatList = React.createClass({
         height : 20,
         top: 7,
         right: 0,
-        margin : "12px 0px 0px 0px",
-        fontSize: 12
+        margin : "6px 0px 0px 0px",
+        fontSize: 12,
+        textAlign : 'center'
       },
       commentContainer: {
+        width: 'calc(100%-50px)',
         color: Colors.lightBlack,
         fontSize: 12
       },
+      deleteIcon: {
+        width : 24,
+        height : 24,
+        padding: 0,
+        marginTop : 3
+      }
     };
 
     if (this.props.data.length < 1) {
@@ -61,20 +71,38 @@ var ChatList = React.createClass({
         if (comment === null || comment === undefined)
           return;
 
+        var userId = comment.user.S.split('__')[0];
         var name = comment.user.S.split('__')[1];
         var profile = comment.user.S.split('__')[2];
         var date = this.readableDate(comment.date.S);
+
+        var deleteIcon = function () {
+          if (document.user && userId === document.user.id) {
+            return (
+              <IconButton
+                style={styles.deleteIcon}
+                onTouchTap={this._handleDeleteCommentTouchTap.bind(null, comment)} >
+                <Delete />
+              </IconButton>
+            );
+          } else {
+            return null;
+          }
+        }.bind(this)();
 
         return (
           <div>
             <ListDivider />
             <ListItem
               disabled={true}
-              style={{paddingRight: 16, paddingBottom: 10}}
+              style={{paddingRight: 48, paddingBottom: 10}}
               leftAvatar={<Avatar src={profile} style={styles.leftAvataIcon}></Avatar>}
               rightIcon={
                 <div style={styles.rightDiv}>
                   {date}
+                  <div>
+                    {deleteIcon}
+                  </div>
                 </div>
               }
               primaryText={
@@ -129,6 +157,9 @@ var ChatList = React.createClass({
 
     var year = day / 365;
     return year.toFixed(0) + ' 년';
+  },
+  _handleDeleteCommentTouchTap : function(comment, e) {
+    console.log(comment);
   },
 });
 
