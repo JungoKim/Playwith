@@ -955,6 +955,32 @@ app.post('/getComment', function (req, res) {
   });
 });
 
+
+app.post('/deleteComment', function (req, res) {
+  var index = req.body.index;
+  var params = {
+    Key: {
+      "index": {
+        "S": index
+      }
+    },
+    TableName: 'playusChat'
+    };
+
+  dynamodb.deleteItem(params, function (err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      res.json(err);
+      return;
+    }
+    else {
+      console.log(JSON.stringify(data));
+      res.json('{"result" : "The comment was deleted"}');
+    }
+  });
+});
+
+
 var server = app.listen(4000, function () {
   var host = server.address().address;
   var port = server.address().port;
