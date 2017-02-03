@@ -865,6 +865,39 @@ app.post('/editPlay', function (req, res) {
   });
 });
 
+
+app.post('/changePlayState', function (req, res) {
+  var playusIndex = req.body.index;
+  var state = req.body.state;
+
+  var params = {
+    Key: {
+      "index": {
+        "S": playusIndex
+      }
+    },
+    TableName: 'playus',
+    AttributeUpdates: {
+      "state": {
+        Action: 'PUT',
+        Value: {
+          "S": state
+        }
+      },
+    }
+  };
+
+  dynamodb.updateItem(params, function (err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      res.json(err);
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+});
+
 app.post('/addComment', function (req, res) {
   var playusIndex = req.body.playusIndex;
   var user = req.body.user;
