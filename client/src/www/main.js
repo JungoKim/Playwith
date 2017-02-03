@@ -291,9 +291,17 @@ function displayDate(playDate) {
 
   var hour = date.getHours();
   var minute = date.getMinutes();
-  var ampm = hour > 12 ? '오후' : '오전';
-  hour %= 12;
+  var ampm = hour >= 12 ? '오후' : '오전';
+
+  if (hour > 12)
+    hour %= 12;
+
   minute = minute === 0 ? '' : minute + "분";
 
   return month+'월 '+day+'일 '+week[dayLabel]+", " +ampm+" "+hour+"시 "+minute;
+}
+
+function UriToHref(text) {
+  var exp = /(\b((https?|ftp|file):\/\/|(www))[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)/ig;
+  return text.replace(exp,"<a href='$1'>$1</a>");
 }

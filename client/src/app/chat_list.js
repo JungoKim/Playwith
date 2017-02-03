@@ -75,6 +75,7 @@ var ChatList = React.createClass({
         var name = comment.user.S.split('__')[1];
         var profile = comment.user.S.split('__')[2];
         var date = this.readableDate(comment.date.S);
+        var commentText = UriToHref(comment.comment.S);
 
         var deleteIcon = function () {
           if (document.user && userId === document.user.id) {
@@ -109,7 +110,7 @@ var ChatList = React.createClass({
                  <span style={{fontSize: 14}}>
                    {name}
                    <br/>
-                   <span style={styles.commentContainer}>{comment.comment.S}</span>
+                   <span style={styles.commentContainer} dangerouslySetInnerHTML={{__html: commentText}}></span>
                  </span>
               } />
           </div>
