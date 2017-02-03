@@ -112,6 +112,7 @@ var Chat = React.createClass({
         </div>
         <div style={styles.chatListContainer}>
           <ChatList
+            handleDeleteComment={this._handleDeleteComment}
             data={this.state.chatListData} />
         </div>
         <LoginSel
@@ -257,6 +258,43 @@ var Chat = React.createClass({
       }.bind(this)
     });
   },
+
+  deleteComment: function(comment) {
+    console.log('deleteComment called');
+
+    var query = {};
+    query.index = comment.index.S;
+
+    $.ajax({
+      url: window.server.url+'/deleteComment',
+      dataType: 'json',
+      data : query,
+      type: 'POST',
+      cache: false,
+      success: function (recievedData) {
+        if (recievedData === '{"result" : "The comment was deleted"}') {
+          var chatList = this.state.chatListData;
+          var index = chatList.indexOf(comment);
+
+          if (index > -1) {
+            chatList.splice(index, 1);
+            this.setState({chatListData: chatList});
+          }
+        } else {
+          this.setState({snackbarOpen: true, snackbarMsg: "댓글삭제 실패..."});
+        }
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.log(this.props.url, status, err.toString());
+        this.setState({snackbarOpen: true, snackbarMsg: "댓글삭제 실패..."});
+      }.bind(this)
+    });
+  },
+
+  _handleDeleteComment(comment) {
+    console.log('_handleDeleteComment');
+    this.deleteComment(comment);
+  }
 });
 
 Chat.contextTypes = {

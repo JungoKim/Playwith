@@ -25,7 +25,7 @@ var ChatList = React.createClass({
         marginRight: 'auto',
         width: "100%",
         maxWidth : 650,
-                backgroundColor : Colors.grey100,
+        backgroundColor : Colors.grey100,
       },
       listContainer:  {
         paddingTop: 0,
@@ -160,6 +160,7 @@ var ChatList = React.createClass({
   },
   _handleDeleteCommentTouchTap : function(comment, e) {
     console.log(comment);
+    this.props.handleDeleteComment(comment);
   },
 });
 
