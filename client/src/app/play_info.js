@@ -175,7 +175,7 @@ var PlayInfo = React.createClass({
     };
 
     var button = function () {
-      if (this.state.playInfoData.state.S === 'closed'
+      if (this.state.playInfoData.state.S === 'close'
        && document.user.id !== this.state.playInfoData.userId.S) {
         return (
           <RaisedButton

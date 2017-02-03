@@ -45,6 +45,7 @@ var EditPlay = React.createClass({
 
     return {
       sent : false,
+      playStateSent: false,
       eventValue: selectedEventValue.toString(),
       maxMemberValue: selectedMaxMemberValue.toString(),
       mapSelectText : window.textSet.mapSelect,
@@ -211,7 +212,7 @@ var EditPlay = React.createClass({
     };
 
     var button = function () {
-      if (selectedPlay.state.S === 'closed') {
+      if (selectedPlay.state.S === 'close') {
         return (
           <RaisedButton
             label={window.textSet.closedCancel}
@@ -455,7 +456,7 @@ var EditPlay = React.createClass({
   },
 
   eidtPlay: function(playInfo) {
-    console.log('createPlay called');
+    console.log('eidtPlay called');
 
     if (this.state.sent === true) {
       console.log('cancel duplicate call');
@@ -495,9 +496,63 @@ var EditPlay = React.createClass({
       }.bind(this),
     });
   },
+
+  changePlayState : function(playusIndex, state) {
+    console.log('changePlayState called');
+
+    if (this.state.playStateSent === true) {
+      console.log('cancel duplicate call');
+      return;
+    }
+
+    this.setState({playStateSent: true});
+    var url = window.server.url+'/changePlayState';
+
+    var query = {};
+    query.index = playusIndex;
+    query.state = state;
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: query,
+      success: function (recievedData) {
+        if (recievedData !== undefined) {
+          console.log(recievedData);
+          if (selectedPlay.state.S === 'open') {
+            selectedPlay.state.S = 'close';
+          } else {
+            selectedPlay.state.S = 'open';
+          }
+          this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 완료하였습니다"});
+          setTimeout(
+            function(){
+              window.playListState = "UpdateNeeded";
+              window.myPlayListState = "UpdateNeeded";
+              window.joinPlayListState = "UpdateNeeded";
+              window.history.back();
+            }.bind(this)
+            , 1000
+          );
+        }
+        else {
+          this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 실패하였습니다"});
+        }
+      }.bind(this),
+      error: function (xhr, status, err) {
+        this.setState({snackbarOpen: true, snackbarMsg: "Play 수정을 실패하였습니다"});
+        this.setState({playStateSent: false});
+      }.bind(this),
+    });
+  },
+
   _handleClosedCancelButtonTouchTap : function(playInfo) {
+    this.changePlayState(selectedPlay.index.S, 'open');
+
   },
   _handleDoCloseButtonTouchTap : function(playInfo) {
+    this.changePlayState(selectedPlay.index.S, 'close');
   },
 });
 
