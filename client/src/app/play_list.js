@@ -122,11 +122,11 @@ var PlayList = React.createClass({
                    {play.playEvent.S}
                    <br/>
                    <TextField
-                     defaultValue={play.desc.S}
+                     value={play.desc.S}
                      style={styles.descContainer}
                      underlineShow={false}
                      rows={1}
-                     rowsMax={100}
+                     rowsMax={10}
                      multiLine={true} />
                    <br/>
                    <span style={styles.playDateContainer}>
