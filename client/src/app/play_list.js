@@ -105,6 +105,9 @@ var PlayList = React.createClass({
         var distKM = window.calcDistKM(play.locationLat.S, play.locationLng.S) + "km";
         var dispDate = window.displayDate(play.playDate.S);
         var joinMemberNumber = play.joinList? play.joinList.SS.length : 0;
+        var avatar = play.userId.S === "103264010188543" ?
+                       null : <Avatar src={play.profile.S} style={styles.rightSportsIcon}></Avatar>;
+
         return (
           <div>
             <ListDivider />
@@ -113,7 +116,7 @@ var PlayList = React.createClass({
               leftAvatar={<Avatar src={play.playEventImage.S} style={styles.leftAvataIcon}></Avatar>}
               rightIcon={
                 <div style={styles.rightDiv}>
-                  <Avatar src={play.profile.S} style={styles.rightSportsIcon}></Avatar>
+                  {avatar}
                   <div style={styles.rightJoinStatus}>{joinMemberNumber} / {play.maxJoin.N}</div>
                 </div>
               }
